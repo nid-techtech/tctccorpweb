@@ -6,7 +6,7 @@ interface Props {
   filterPath?: string; // e.g., 'blog' to show only blog posts
 }
 
-const { count = 5, filterPath } = Astro.props;
+const { count = 5, filterPath } = Astro.props; // もし、5件以上表示したいなら、countを変えてください
 
 const allDocs = await getCollection('docs');
 const sortedDocs = allDocs
@@ -29,7 +29,7 @@ const sortedDocs = allDocs
       <li>
         <a href={`/${doc.slug}`}>
           <span class="title">{doc.data.title || doc.slug}</span>
-          <span class="date">{new Date(doc.data.created_at).toLocaleDateString()}</span>
+          <span class="date">{doc.data.created_at && new Date(doc.data.created_at).toLocaleDateString()}</span>
         </a>
       </li>
     ))}
@@ -41,6 +41,7 @@ const sortedDocs = allDocs
     margin-top: 2rem;
     border-top: 1px solid var(--color-border);
     padding-top: 1rem;
+    transition: border-color 0.3s;
 }
 ul {
     list-style: none;
