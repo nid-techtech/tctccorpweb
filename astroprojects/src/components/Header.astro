@@ -29,10 +29,10 @@ const allDocs = await getCollection("docs");
     <!-- Desktop Menu -->
     <nav class="desktop-menu">
       <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about/whatistechtech">About</a></li>
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/work">Work</a></li>
+        <li><a href="/">HOME</a></li>
+        <li><a href="/about/whatistechtech">ABOUT</a></li>
+        <li><a href="/blog">BLOG</a></li>
+        <li><a href="/work">WORK</a></li>
       </ul>
     </nav>
     <div class="controls">
@@ -52,10 +52,10 @@ const allDocs = await getCollection("docs");
   </div>
   <nav id="nav-menu" class="nav-menu">
     <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/about/whatistechtech">About</a></li>
-      <li><a href="/blog">Blog</a></li>
-      <li><a href="/work">Work</a></li>
+      <li><a href="/">HOME</a></li>
+      <li><a href="/about/whatistechtech">ABOUT</a></li>
+      <li><a href="/blog">BLOG</a></li>
+      <li><a href="/work">WORK</a></li>
       <!-- Add more links as needed or generate dynamically -->
     </ul>
   </nav>
@@ -278,7 +278,10 @@ const allDocs = await getCollection("docs");
     height: 100%;
     background-color: var(--color-bg);
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition:
+      opacity 0.4s ease,
+      background-color 0.3s;
+    margin-top: 73px;
   }
 
   :global(body.menu-open) .nav-menu::before {
@@ -289,8 +292,9 @@ const allDocs = await getCollection("docs");
   .nav-menu ul {
     position: relative; /* Above backdrop */
     list-style: none;
-    padding: 2rem 3rem 2rem 2rem; /* Right padding larger as requested */
+    padding: 2rem 6rem 2rem 2rem; /* Right padding larger as requested */
     margin: 0;
+    margin-top: 73px;
     margin-left: auto; /* Align to right */
     text-align: left;
 
@@ -299,7 +303,9 @@ const allDocs = await getCollection("docs");
     background-color: var(--color-bg); /* Solid background for menu */
 
     transform: translateX(100%); /* Start off-screen right */
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 0.3s;
 
     display: flex;
     flex-direction: column;
@@ -307,7 +313,7 @@ const allDocs = await getCollection("docs");
     overflow-y: auto;
 
     /* Box shadow for depth */
-    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: -1px 5px 10px rgba(0, 0, 0, 0.1);
   }
 
   :global(body.menu-open) .nav-menu ul {
@@ -315,7 +321,7 @@ const allDocs = await getCollection("docs");
   }
 
   .nav-menu li {
-    margin: 1.5rem 0;
+    margin: 0.8rem 0;
     opacity: 0;
     transform: translateX(20px); /* Slide slightly with list */
     transition:
@@ -325,11 +331,12 @@ const allDocs = await getCollection("docs");
   .nav-menu a {
     display: block;
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: var(--color-text);
     text-decoration: none;
     padding: 0.5rem 0;
     white-space: nowrap; /* Prevent wrapping */
+    transition: color 0.3s;
   }
 
   /* Staggered animation for items */

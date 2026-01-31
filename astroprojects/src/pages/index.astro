@@ -1,15 +1,15 @@
 ---
-import { getEntry } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import { getEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
-import RecentPosts from '../components/RecentPosts.astro';
+import RecentPosts from "../components/RecentPosts.astro";
 
 // Fetch specific entry for home (e.g., 'index' or 'home')
 let entry;
 try {
-    entry = await getEntry('docs', 'index');
+    entry = await getEntry("docs", "index");
 } catch (e) {
     console.error("Home entry not found");
 }
@@ -20,18 +20,27 @@ const Content = entry ? (await entry.render()).Content : null;
 <BaseLayout title={entry?.data.title || "Home"}>
     <Header />
     <main>
-        {entry ? (
-            <article class="prose">
-                 <h1>{entry.data.title}</h1>
-                 <Content />
-            </article>
-        ) : (
-            <div>
-                <h1>Welcome to TECH☆TECH</h1>
-                <p>Content is loading or missing.</p>
-            </div>
-        )}
-        
+        {
+            entry ? (
+                <article class="prose">
+                    {entry.data.cover && (
+                        <img
+                            src={entry.data.cover}
+                            alt={entry.data.title}
+                            class="cover-image"
+                        />
+                    )}
+                    <h1>{entry.data.title}</h1>
+                    <Content />
+                </article>
+            ) : (
+                <div>
+                    <h1>Welcome to TECH☆TECH</h1>
+                    <p>Content is loading or missing.</p>
+                </div>
+            )
+        }
+
         <RecentPosts count={5} />
     </main>
     <Footer />
@@ -45,5 +54,12 @@ const Content = entry ? (await entry.render()).Content : null;
     }
     .prose {
         line-height: 1.6;
+    }
+    .cover-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: block;
     }
 </style>
