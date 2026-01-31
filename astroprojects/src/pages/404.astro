@@ -1,0 +1,102 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+const allDocs = await getCollection("docs");
+const allUrls = allDocs.map((doc) => `/${doc.slug}/`);
+allUrls.push("/");
+---
+
+<BaseLayout title="404: Not Found" description="ページが見つかりません">
+    <Header />
+    <main class="error-page">
+        <div class="content">
+            <h1>404</h1>
+            <p>指定されたリンク先が存在しないです。</p>
+            <div class="actions">
+                <button id="random-btn">ランダムなページへ</button>
+                <a href="/" class="home-link">ホームに戻る</a>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</BaseLayout>
+
+<script define:vars={{ allUrls }}>
+    const btn = document.getElementById("random-btn");
+    if (btn) {
+        btn.addEventListener("click", () => {
+            if (allUrls && allUrls.length > 0) {
+                // 自分自身のページ(404)に再遷移しても意味がないのですが、
+                // 404ページのURLは不定（ユーザーが入力したURL）なので除外は難しいですが、
+                // allUrlsには有効なページしか入っていないので、どれを選んでもOKです。
+                const randomUrl =
+                    allUrls[Math.floor(Math.random() * allUrls.length)];
+                window.location.href = randomUrl;
+            }
+        });
+    }
+</script>
+
+<style>
+    .error-page {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        text-align: center;
+        padding: 2rem;
+    }
+    .content {
+        max-width: 600px;
+    }
+    h1 {
+        font-size: 6rem;
+        margin: 0;
+        line-height: 1;
+        color: var(--color-primary);
+        font-family: var(--font-code);
+    }
+    p {
+        font-size: 1.5rem;
+        margin: 1rem 0 2.5rem;
+        color: var(--color-text);
+    }
+    .actions {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    button {
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1.1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition:
+            opacity 0.3s,
+            transform 0.2s;
+        font-family: var(--font-base);
+    }
+    button:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+    button:active {
+        transform: translateY(0);
+    }
+    .home-link {
+        color: var(--color-secondary);
+        text-decoration: underline;
+        font-size: 1.1rem;
+    }
+    .home-link:hover {
+        color: var(--color-primary);
+    }
+</style>
