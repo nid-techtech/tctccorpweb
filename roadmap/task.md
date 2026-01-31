@@ -4,9 +4,14 @@
 - [x] 基盤実装
 - [x] コンテンツ実装
 - [x] コンテンツ移行と調整
-    - [x] Obsidianデータの取り込み <!-- status: cancelled in json, but user wants it. Resetting to todo -->
+    - [x] Obsidianデータの取り込み
     - [x] 動作確認
     - [x] テンプレート作成
+    - [x] MDX化とメタデータ復元
+        - [x] template.mdxに基づくスキーマ定義
+        - [x] mdからmdxへの変換
+        - [x] メタデータ(カバー画像・タグ等)の再付与
+        - [x] カバー画像表示機能の再実装
 - [x] UI/UX改善
     - [x] ロゴとテーマ連動
     - [x] トグルスイッチ化

@@ -27,7 +27,20 @@ const { Content } = await entry.render();
     <main>
         {entry.data.cover && <div class="cover-image"><img src={entry.data.cover} alt="Cover" /></div>}
         <article class="prose">
-            <h1>{entry.data.title}</h1>
+            <header class="article-header">
+                <h1>{entry.data.title}</h1>
+                {entry.data.subtitle && <p class="subtitle">{entry.data.subtitle}</p>}
+                <div class="meta">
+                    <span class="date">Created: {entry.data.created_at?.toLocaleDateString()}</span>
+                    {entry.data.updated_at && <span class="date">Updated: {entry.data.updated_at.toLocaleDateString()}</span>}
+                    {entry.data.author && <span class="author">By {entry.data.author}</span>}
+                </div>
+                {entry.data.tags && entry.data.tags.length > 0 && (
+                    <div class="tags">
+                        {entry.data.tags.map(tag => <span class="tag">#{tag}</span>)}
+                    </div>
+                )}
+            </header>
             <Content />
         </article>
     </main>
@@ -48,5 +61,35 @@ const { Content } = await entry.render();
     }
     .prose {
         line-height: 1.6;
+    }
+    .article-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 1rem;
+    }
+    .subtitle {
+        font-size: 1.2rem;
+        color: var(--color-secondary);
+        margin: 0.5rem 0;
+    }
+    .meta {
+        font-size: 0.9rem;
+        color: var(--color-secondary);
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+    }
+    .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+    .tag {
+        background: var(--color-code-bg);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
     }
 </style>
