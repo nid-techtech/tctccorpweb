@@ -1,0 +1,284 @@
+---
+import { getCollection } from "astro:content";
+
+// Setup navigation data
+const allDocs = await getCollection("docs");
+// Helper to build tree function omitted for brevity as it is unused in the previous snippet,
+// using simple list as per previous placeholder. If recursive needed, can re-add.
+// Focusing on UI request.
+---
+
+<header>
+  <div class="header-content">
+    <a href="/" class="logo">
+      <div class="logo-wrapper">
+        <img
+          src="/logo_square_black_alpha.png"
+          alt="Logo"
+          class="logo-img light-logo"
+        />
+        <img
+          src="/logo_square_white_alpha.png"
+          alt="Logo"
+          class="logo-img dark-logo"
+        />
+      </div>
+      <span class="logo-text">TECH☆TECH</span>
+    </a>
+    <div class="controls">
+      <button id="theme-toggle" aria-label="Toggle Theme" class="theme-switch">
+        <div class="switch-track">
+          <div class="switch-thumb">
+            <span class="icon-sun">☀</span>
+            <span class="icon-moon">☾</span>
+          </div>
+        </div>
+      </button>
+      <button id="menu-toggle" aria-label="Toggle Menu" class="menu-btn">
+        <span class="hamburger-icon">☰</span>
+        <span class="close-icon">✕</span>
+      </button>
+    </div>
+  </div>
+  <nav id="nav-menu" class="nav-menu">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/about/whatistechtech">About</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/work">Work</a></li>
+      <!-- Add more links as needed or generate dynamically -->
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background-color 0.3s;
+  }
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 101; /* Above nav menu */
+    background-color: var(--color-bg); /* Ensure opacity */
+  }
+
+  /* Logo Styles */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .logo-wrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+  }
+
+  .logo-img {
+    height: 40px;
+    width: auto;
+    transition: opacity 0.3s;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Default state (Light Mode) */
+  .logo-img.light-logo {
+    opacity: 1;
+    z-index: 2;
+  }
+  .logo-img.dark-logo {
+    opacity: 0;
+    z-index: 1;
+  }
+
+  /* Dark Mode Handlers */
+  :global([data-theme="dark"]) .logo-img.light-logo {
+    opacity: 0;
+  }
+  :global([data-theme="dark"]) .logo-img.dark-logo {
+    opacity: 1;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* Theme Toggle Switch */
+  .theme-switch {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 60px;
+    height: 30px;
+    position: relative;
+  }
+  .switch-track {
+    background-color: var(--color-border);
+    border-radius: 30px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: background-color 0.3s;
+  }
+  .switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    background-color: var(--color-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  :global([data-theme="dark"]) .switch-thumb {
+    transform: translateX(30px);
+  }
+  .icon-sun,
+  .icon-moon {
+    font-size: 0.8rem;
+    position: absolute;
+    transition: opacity 0.3s;
+  }
+  .icon-sun {
+    opacity: 1;
+    color: #f59e0b;
+  }
+  .icon-moon {
+    opacity: 0;
+    color: #6366f1;
+  }
+
+  :global([data-theme="dark"]) .icon-sun {
+    opacity: 0;
+  }
+  :global([data-theme="dark"]) .icon-moon {
+    opacity: 1;
+  }
+
+  /* Hamburger Menu Button */
+  .menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--color-text);
+    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: color 0.3s;
+  }
+  .close-icon {
+    display: none;
+  }
+  :global(body.menu-open) .hamburger-icon {
+    display: none;
+  }
+  :global(body.menu-open) .close-icon {
+    display: block;
+  }
+
+  /* Navigation Menu with Animation */
+  .nav-menu {
+    position: absolute;
+    top: 100%; /* Below header */
+    left: 0;
+    width: 100%;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.4s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(body.menu-open) .nav-menu {
+    max-height: 500px; /* Arbitrary large height */
+    opacity: 1;
+  }
+
+  /* Nav Links */
+  .nav-menu ul {
+    list-style: none;
+    padding: 1rem;
+    margin: 0;
+    text-align: center;
+  }
+  .nav-menu li {
+    margin: 1rem 0;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+  /* Staggered animation for items */
+  :global(body.menu-open) .nav-menu li {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  :global(body.menu-open) .nav-menu li:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  :global(body.menu-open) .nav-menu li:nth-child(2) {
+    transition-delay: 0.15s;
+  }
+  :global(body.menu-open) .nav-menu li:nth-child(3) {
+    transition-delay: 0.2s;
+  }
+  :global(body.menu-open) .nav-menu li:nth-child(4) {
+    transition-delay: 0.25s;
+  }
+</style>
+
+<script>
+  const themeToggle = document.getElementById("theme-toggle");
+  const menuToggle = document.getElementById("menu-toggle");
+
+  // Theme Toggle
+  themeToggle?.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  });
+
+  // Menu Toggle (Click only)
+  menuToggle?.addEventListener("click", () => {
+    document.body.classList.toggle("menu-open");
+  });
+</script>

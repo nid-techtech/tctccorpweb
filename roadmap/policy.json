@@ -1,0 +1,6 @@
+{
+    "policy": "Basic Policy: Create a lightweight, maintainable Astro static site based on Obsidian Vault structure. Support responsive design, dark/light mode, and file-based routing.",
+    "language": "Japanese",
+    "framework": "Astro",
+    "styling": "Vanilla CSS + CSS Variables"
+}

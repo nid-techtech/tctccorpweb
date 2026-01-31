@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('docs');
+  return blogEntries
+    .filter(entry => entry.slug !== 'index')
+    .map(entry => ({
+      params: { slug: entry.slug }, props: { entry },
+    }));
+}
+
+interface Props {
+  entry: CollectionEntry<'docs'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={entry.data.title || "TECH☆TECH"} description={entry.data.description}>
+    <Header />
+    <main>
+        {entry.data.cover && <div class="cover-image"><img src={entry.data.cover} alt="Cover" /></div>}
+        <article class="prose">
+            <h1>{entry.data.title}</h1>
+            <Content />
+        </article>
+    </main>
+    <Footer />
+</BaseLayout>
+
+<style>
+    main {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    .cover-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    .prose {
+        line-height: 1.6;
+    }
+</style>

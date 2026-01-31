@@ -1,0 +1,49 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+import RecentPosts from '../components/RecentPosts.astro';
+
+// Fetch specific entry for home (e.g., 'index' or 'home')
+let entry;
+try {
+    entry = await getEntry('docs', 'index');
+} catch (e) {
+    console.error("Home entry not found");
+}
+// If not found, show default
+const Content = entry ? (await entry.render()).Content : null;
+---
+
+<BaseLayout title={entry?.data.title || "Home"}>
+    <Header />
+    <main>
+        {entry ? (
+            <article class="prose">
+                 <h1>{entry.data.title}</h1>
+                 <Content />
+            </article>
+        ) : (
+            <div>
+                <h1>Welcome to TECH☆TECH</h1>
+                <p>Content is loading or missing.</p>
+            </div>
+        )}
+        
+        <RecentPosts count={5} />
+    </main>
+    <Footer />
+</BaseLayout>
+
+<style>
+    main {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    .prose {
+        line-height: 1.6;
+    }
+</style>

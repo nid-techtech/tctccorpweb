@@ -1,0 +1,67 @@
+{
+    "tasks": [
+        {
+            "id": 0,
+            "name": "プロジェクトの初期化と計画",
+            "status": "done",
+            "subtasks": []
+        },
+        {
+            "id": 1,
+            "name": "基盤実装",
+            "status": "done",
+            "subtasks": []
+        },
+        {
+            "id": 2,
+            "name": "コンテンツ実装",
+            "status": "done",
+            "subtasks": []
+        },
+        {
+            "id": 3,
+            "name": "コンテンツ移行と調整",
+            "status": "done",
+            "subtasks": [
+                {
+                    "id": 14,
+                    "name": "Obsidianデータの取り込み",
+                    "status": "cancelled"
+                },
+                {
+                    "id": 15,
+                    "name": "動作確認",
+                    "status": "done"
+                },
+                {
+                    "id": 16,
+                    "name": "テンプレート作成",
+                    "status": "done"
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "name": "UI/UX改善",
+            "status": "done",
+            "subtasks": [
+                {
+                    "id": 18,
+                    "name": "ロゴとテーマ連動",
+                    "status": "done"
+                },
+                {
+                    "id": 19,
+                    "name": "トグルスイッチ化",
+                    "status": "done"
+                },
+                {
+                    "id": 20,
+                    "name": "メニューアニメーション",
+                    "status": "done"
+                }
+            ]
+        }
+    ],
+    "last_updated": "2026-01-30T12:35:00+09:00"
+}

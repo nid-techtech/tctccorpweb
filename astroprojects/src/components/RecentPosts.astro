@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  count?: number;
+  filterPath?: string; // e.g., 'blog' to show only blog posts
+}
+
+const { count = 5, filterPath } = Astro.props;
+
+const allDocs = await getCollection('docs');
+const sortedDocs = allDocs
+  .filter(doc => !filterPath || doc.slug.startsWith(filterPath))
+  .filter(doc => doc.slug !== 'index') // Exclude home page itself
+  .sort((a, b) => {
+    // Sort by created_at or updated_at. Our script added both.
+    // Assuming schema is loose, we access data directly.
+    const dateA = new Date(a.data.updated_at || a.data.created_at || 0);
+    const dateB = new Date(b.data.updated_at || b.data.created_at || 0);
+    return dateB.getTime() - dateA.getTime();
+  })
+  .slice(0, count);
+---
+
+<div class="recent-posts">
+  <h3>New Arrivals</h3>
+  <ul>
+    {sortedDocs.map(doc => (
+      <li>
+        <a href={`/${doc.slug}`}>
+          <span class="title">{doc.data.title || doc.slug}</span>
+          <span class="date">{new Date(doc.data.created_at).toLocaleDateString()}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+.recent-posts {
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    margin-bottom: 0.5rem;
+}
+a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+a:hover {
+    background-color: var(--color-code-bg);
+    text-decoration: none;
+}
+.date {
+    font-size: 0.8rem;
+    color: var(--color-secondary);
+}
+</style>
