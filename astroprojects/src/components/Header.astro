@@ -248,70 +248,106 @@ const allDocs = await getCollection("docs");
 
   /* Mobile Navigation Menu */
   .nav-menu {
-    position: absolute;
-    top: 100%; /* Below header */
-    left: 20%; /* 20% margin from left */
-    right: 0;
-    width: 80%; /* Remaining width */
-    background-color: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
-    border-left: 1px solid var(--color-border);
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition:
-      max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.4s ease,
-      background-color 0.3s,
-      border-color 0.3s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Cover entire viewport */
+    top: 73px; /* Approximate header height. Adjust if needed or use JS */
+    /* Note: Since header is sticky, top: 100% of header might allow content to be covered if using absolute. 
+       Fixed is safer for overlay behavior but needs top offset matching header. 
+       Let's stick to absolute relative to header if header is container? 
+       No, let's use fixed Top: 0 and z-index below header to cover full screen. */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 90; /* Below header (z-100) */
+
+    visibility: hidden; /* Click-through when closed */
+    transition: visibility 0.4s;
   }
 
   :global(body.menu-open) .nav-menu {
-    max-height: 100vh; /* Allow full height if needed */
-    opacity: 1;
+    visibility: visible;
   }
 
-  /* Mobile Nav Links */
-  .nav-menu ul {
-    list-style: none;
-    padding: 2rem; /* Initial padding */
-    margin: 0;
-    text-align: left; /* Left align */
-  }
-  .nav-menu li {
-    margin: 1.5rem 0; /* Increased spacing */
-    transform: translateY(-10px);
+  /* Overlay (Backdrop) */
+  .nav-menu::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg);
     opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  :global(body.menu-open) .nav-menu::before {
+    opacity: 0.7;
+  }
+
+  /* Mobile Nav Links Container (The sliding panel) */
+  .nav-menu ul {
+    position: relative; /* Above backdrop */
+    list-style: none;
+    padding: 2rem 3rem 2rem 2rem; /* Right padding larger as requested */
+    margin: 0;
+    margin-left: auto; /* Align to right */
+    text-align: left;
+
+    width: fit-content;
+    height: 100%; /* Full height */
+    background-color: var(--color-bg); /* Solid background for menu */
+
+    transform: translateX(100%); /* Start off-screen right */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    display: flex;
+    flex-direction: column;
+    /* Ensure content is scrollable if too tall, though normally minimal links */
+    overflow-y: auto;
+
+    /* Box shadow for depth */
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(body.menu-open) .nav-menu ul {
+    transform: translateX(0); /* Slide in */
+  }
+
+  .nav-menu li {
+    margin: 1.5rem 0;
+    opacity: 0;
+    transform: translateX(20px); /* Slide slightly with list */
     transition:
       transform 0.3s ease,
       opacity 0.3s ease;
   }
   .nav-menu a {
     display: block;
-    font-weight: 700; /* Bold */
-    font-size: 1.2rem; /* Larger text */
+    font-weight: 700;
+    font-size: 1.2rem;
     color: var(--color-text);
     text-decoration: none;
-    padding: 0.5rem 0; /* Larger touch target */
+    padding: 0.5rem 0;
+    white-space: nowrap; /* Prevent wrapping */
   }
 
   /* Staggered animation for items */
   :global(body.menu-open) .nav-menu li {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateX(0);
   }
   :global(body.menu-open) .nav-menu li:nth-child(1) {
-    transition-delay: 0.1s;
-  }
-  :global(body.menu-open) .nav-menu li:nth-child(2) {
-    transition-delay: 0.15s;
-  }
-  :global(body.menu-open) .nav-menu li:nth-child(3) {
     transition-delay: 0.2s;
   }
-  :global(body.menu-open) .nav-menu li:nth-child(4) {
+  :global(body.menu-open) .nav-menu li:nth-child(2) {
     transition-delay: 0.25s;
+  }
+  :global(body.menu-open) .nav-menu li:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+  :global(body.menu-open) .nav-menu li:nth-child(4) {
+    transition-delay: 0.35s;
   }
 
   /* Responsive Media Queries */
@@ -358,5 +394,17 @@ const allDocs = await getCollection("docs");
   // Menu Toggle (Click only)
   menuToggle?.addEventListener("click", () => {
     document.body.classList.toggle("menu-open");
+  });
+
+  // Close menu when clicking backdrop
+  const navMenu = document.getElementById("nav-menu");
+  navMenu?.addEventListener("click", (e) => {
+    // Check if the click was on the nav-menu itself (backdrop) or specifically NOT the ul
+    // Since ul stops propagation usually or we check target
+    // In this CSS structure, .nav-menu is the full screen container.
+    // The ul is the child.
+    if (e.target === navMenu) {
+      document.body.classList.remove("menu-open");
+    }
   });
 </script>
