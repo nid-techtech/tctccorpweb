@@ -25,6 +25,16 @@ const allDocs = await getCollection("docs");
       </div>
       <span class="logo-text">TECH☆TECH</span>
     </a>
+
+    <!-- Desktop Menu -->
+    <nav class="desktop-menu">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/whatistechtech">About</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/work">Work</a></li>
+      </ul>
+    </nav>
     <div class="controls">
       <button id="theme-toggle" aria-label="Toggle Theme" class="theme-switch">
         <div class="switch-track">
@@ -59,7 +69,9 @@ const allDocs = await getCollection("docs");
     position: sticky;
     top: 0;
     z-index: 100;
-    transition: background-color 0.3s, border-color 0.3s;
+    transition:
+      background-color 0.3s,
+      border-color 0.3s;
   }
   .header-content {
     display: flex;
@@ -141,7 +153,9 @@ const allDocs = await getCollection("docs");
     width: 100%;
     height: 100%;
     position: relative;
-    transition: background-color 0.3s, border-color 0.3s;
+    transition:
+      background-color 0.3s,
+      border-color 0.3s;
   }
   .switch-thumb {
     position: absolute;
@@ -184,6 +198,28 @@ const allDocs = await getCollection("docs");
     opacity: 1;
   }
 
+  /* Desktop Menu (Ribbon) */
+  .desktop-menu {
+    display: none;
+  }
+  .desktop-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 2rem;
+  }
+  .desktop-menu a {
+    text-decoration: none;
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: 1rem;
+    transition: color 0.3s;
+  }
+  .desktop-menu a:hover {
+    color: var(--color-primary);
+  }
+
   /* Hamburger Menu Button */
   .menu-btn {
     background: none;
@@ -210,14 +246,16 @@ const allDocs = await getCollection("docs");
     display: block;
   }
 
-  /* Navigation Menu with Animation */
+  /* Mobile Navigation Menu */
   .nav-menu {
     position: absolute;
     top: 100%; /* Below header */
-    left: 0;
-    width: 100%;
+    left: 20%; /* 20% margin from left */
+    right: 0;
+    width: 80%; /* Remaining width */
     background-color: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
+    border-left: 1px solid var(--color-border);
     max-height: 0;
     overflow: hidden;
     opacity: 0;
@@ -230,25 +268,34 @@ const allDocs = await getCollection("docs");
   }
 
   :global(body.menu-open) .nav-menu {
-    max-height: 500px; /* Arbitrary large height */
+    max-height: 100vh; /* Allow full height if needed */
     opacity: 1;
   }
 
-  /* Nav Links */
+  /* Mobile Nav Links */
   .nav-menu ul {
     list-style: none;
-    padding: 1rem;
+    padding: 2rem; /* Initial padding */
     margin: 0;
-    text-align: center;
+    text-align: left; /* Left align */
   }
   .nav-menu li {
-    margin: 1rem 0;
+    margin: 1.5rem 0; /* Increased spacing */
     transform: translateY(-10px);
     opacity: 0;
     transition:
       transform 0.3s ease,
       opacity 0.3s ease;
   }
+  .nav-menu a {
+    display: block;
+    font-weight: 700; /* Bold */
+    font-size: 1.2rem; /* Larger text */
+    color: var(--color-text);
+    text-decoration: none;
+    padding: 0.5rem 0; /* Larger touch target */
+  }
+
   /* Staggered animation for items */
   :global(body.menu-open) .nav-menu li {
     transform: translateY(0);
@@ -265,6 +312,34 @@ const allDocs = await getCollection("docs");
   }
   :global(body.menu-open) .nav-menu li:nth-child(4) {
     transition-delay: 0.25s;
+  }
+
+  /* Responsive Media Queries */
+  @media (min-width: 768px) {
+    .menu-btn {
+      display: none; /* Hide hamburger on desktop */
+    }
+    .desktop-menu {
+      display: block; /* Show ribbon menu on desktop */
+      margin-left: auto;
+    }
+    .nav-menu {
+      display: none; /* Ensure mobile menu is hidden on desktop */
+    }
+    /* Controls adjustment: Move theme toggle to right, keep desktop menu in middle or right */
+    .header-content {
+      justify-content: flex-start;
+      gap: 2rem;
+    }
+    .controls {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .header-content {
+      justify-content: space-between;
+    }
   }
 </style>
 
