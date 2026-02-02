@@ -1,26 +1,34 @@
 ---
 import { getCollection } from "astro:content";
 
+import { Image } from "astro:assets";
 // Setup navigation data
 const allDocs = await getCollection("docs");
 // Helper to build tree function omitted for brevity as it is unused in the previous snippet,
 // using simple list as per previous placeholder. If recursive needed, can re-add.
 // Focusing on UI request.
+
+import logoBlack from "../assets/logo_square_black_alpha.webp";
+import logoWhite from "../assets/logo_square_white_alpha.webp";
 ---
 
 <header>
   <div class="header-content">
     <a href="/" class="logo">
       <div class="logo-wrapper">
-        <img
-          src="/logo_square_black_alpha.png"
+        <Image
+          src={logoBlack}
           alt="Logo"
           class="logo-img light-logo"
+          loading="eager"
+          fetchpriority="high"
         />
-        <img
-          src="/logo_square_white_alpha.png"
+        <Image
+          src={logoWhite}
           alt="Logo"
           class="logo-img dark-logo"
+          loading="eager"
+          fetchpriority="high"
         />
       </div>
       <span class="logo-text">TECH☆TECH</span>
