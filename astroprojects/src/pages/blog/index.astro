@@ -78,7 +78,7 @@ const blogPosts = allDocs
                         ))}
                     </ul>
                 ) : (
-                    <p>記事が見つかりませんでした。</p>
+                    <p>まだ記事ができてないようです...</p>
                 )
             }
         </div>
@@ -120,7 +120,9 @@ const blogPosts = allDocs
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         transition:
             transform 0.2s,
-            box-shadow 0.2s;
+            box-shadow 0.2s,
+            background-color 0.3s,
+            border-color 0.3s;
     }
     /* Dark mode support assumption, or just good defaults */
     :global(.dark) .post-card {
@@ -160,15 +162,18 @@ const blogPosts = allDocs
         font-size: 1.5rem;
         color: var(--color-text);
         line-height: 1.3;
+        transition: color 0.3s;
     }
     .meta {
         font-size: 0.9rem;
         color: var(--color-secondary, #666);
         margin-bottom: 0.8rem;
+        transition: color 0.3s;
     }
     .tags {
         margin-left: 0.5rem;
         color: var(--color-primary, #0070f3);
+        transition: color 0.3s;
     }
     .description {
         margin: 0;
@@ -179,6 +184,7 @@ const blogPosts = allDocs
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        transition: color 0.3s;
     }
     a {
         text-decoration: none;
