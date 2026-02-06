@@ -1,45 +1,85 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import type { CollectionEntry } from 'astro:content';
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import type { CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
-  const blogEntries = await getCollection('docs');
-  return blogEntries
-    .filter(entry => entry.slug !== 'index')
-    .map(entry => ({
-      params: { slug: entry.slug }, props: { entry },
-    }));
+    const blogEntries = await getCollection("docs");
+    return blogEntries
+        .filter((entry) => entry.slug !== "index")
+        .map((entry) => ({
+            params: { slug: entry.slug },
+            props: { entry },
+        }));
 }
 
 interface Props {
-  entry: CollectionEntry<'docs'>;
+    entry: CollectionEntry<"docs">;
 }
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
 
-<BaseLayout title={entry.data.title || "TECH☆TECH"} description={entry.data.description}>
+<BaseLayout
+    title={entry.data.title || "TECH☆TECH"}
+    description={entry.data.description}
+>
     <Header />
     <main>
-        {entry.data.cover && <div class="cover-image"><img src={entry.data.cover} alt="Cover" /></div>}
+        {
+            entry.data.cover && (
+                <div class="cover-image">
+                    <Image
+                        src={entry.data.cover}
+                        alt="Cover"
+                        loading="eager"
+                        fetchpriority="high"
+                        inferSize={true}
+                    />
+                </div>
+            )
+        }
         <article class="prose">
             <header class="article-header">
                 <h1>{entry.data.title}</h1>
-                {entry.data.subtitle && <p class="subtitle">{entry.data.subtitle}</p>}
+                {
+                    entry.data.subtitle && (
+                        <p class="subtitle">{entry.data.subtitle}</p>
+                    )
+                }
                 <div class="meta">
-                    <span class="date">Created: {entry.data.created_at?.toLocaleDateString()}</span>
-                    {entry.data.updated_at && <span class="date">Updated: {entry.data.updated_at.toLocaleDateString()}</span>}
-                    {entry.data.author && <span class="author">By {entry.data.author}</span>}
+                    <span class="date"
+                        >Created: {
+                            entry.data.created_at?.toLocaleDateString()
+                        }</span
+                    >
+                    {
+                        entry.data.updated_at && (
+                            <span class="date">
+                                Updated:{" "}
+                                {entry.data.updated_at.toLocaleDateString()}
+                            </span>
+                        )
+                    }
+                    {
+                        entry.data.author && (
+                            <span class="author">By {entry.data.author}</span>
+                        )
+                    }
                 </div>
-                {entry.data.tags && entry.data.tags.length > 0 && (
-                    <div class="tags">
-                        {entry.data.tags.map(tag => <span class="tag">#{tag}</span>)}
-                    </div>
-                )}
+                {
+                    entry.data.tags && entry.data.tags.length > 0 && (
+                        <div class="tags">
+                            {entry.data.tags.map((tag) => (
+                                <span class="tag">#{tag}</span>
+                            ))}
+                        </div>
+                    )
+                }
             </header>
             <Content />
         </article>
@@ -66,7 +106,7 @@ const { Content } = await entry.render();
         margin-bottom: 2rem;
         border-bottom: 1px solid var(--color-border);
         padding-bottom: 1rem;
-        transition: border-color 0.3s;;
+        transition: border-color 0.3s;
     }
     .subtitle {
         font-size: 1.2rem;
