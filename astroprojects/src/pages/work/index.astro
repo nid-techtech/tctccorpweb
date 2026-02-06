@@ -7,7 +7,9 @@ import Footer from "../../components/Footer.astro";
 
 const allDocs = await getCollection("docs");
 const workPosts = allDocs
-    .filter((doc) => doc.slug.startsWith("works/") && doc.slug !== "works/index")
+    .filter(
+        (doc) => doc.slug.startsWith("works/") && doc.slug !== "works/index",
+    )
     .sort((a, b) => {
         const dateA = new Date(a.data.updated_at || a.data.created_at || 0);
         const dateB = new Date(b.data.updated_at || b.data.created_at || 0);
@@ -88,7 +90,7 @@ const workPosts = allDocs
 
 <style>
     main {
-        max-width: 800px;
+        max-width: 1080px;
         margin: 0 auto;
         padding: 2rem 1rem;
     }
