@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-
+import P5Intaraction from "../components/P5Intaraction.astro";
 import RecentPosts from "../components/RecentPosts.astro";
 
 // Fetch specific entry for home (e.g., 'index' or 'home')
@@ -20,20 +20,11 @@ const Content = entry ? (await entry.render()).Content : null;
 
 <BaseLayout title={entry?.data.title || "Home"}>
     <Header />
+    <P5Intaraction />
     <main>
         {
             entry && Content ? (
                 <article class="prose">
-                    {entry.data.cover && (
-                        <Image
-                            src={entry.data.cover}
-                            alt={entry.data.title}
-                            class="cover-image"
-                            loading="eager"
-                            fetchpriority="high"
-                            inferSize={true}
-                        />
-                    )}
                     <h1>{entry.data.title}</h1>
                     <Content />
                 </article>
@@ -58,12 +49,5 @@ const Content = entry ? (await entry.render()).Content : null;
     }
     .prose {
         line-height: 1.6;
-    }
-    .cover-image {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        display: block;
     }
 </style>
