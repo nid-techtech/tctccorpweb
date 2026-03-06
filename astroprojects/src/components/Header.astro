@@ -1,12 +1,5 @@
 ---
-import { getCollection } from "astro:content";
-
 import { Image } from "astro:assets";
-// Setup navigation data
-const allDocs = await getCollection("docs");
-// Helper to build tree function omitted for brevity as it is unused in the previous snippet,
-// using simple list as per previous placeholder. If recursive needed, can re-add.
-// Focusing on UI request.
 
 import logoBlack from "../assets/logo_square_black_alpha.webp";
 import logoWhite from "../assets/logo_square_white_alpha.webp";
@@ -74,13 +67,13 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
   header {
     background-color: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
-    padding: 1rem;
+    padding: var(--spacing-sm) var(--spacing-md);
     position: sticky;
     top: 0;
     z-index: 100;
     transition:
-      background-color 0.3s,
-      border-color 0.3s;
+      background-color var(--transition-slow) var(--ease-standard),
+      border-color var(--transition-slow) var(--ease-standard);
   }
   .header-content {
     display: flex;
@@ -90,10 +83,9 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     position: relative;
     z-index: 101; /* Above nav menu */
     background-color: var(--color-bg); /* Ensure opacity */
-    transition: background-color 0.3s;
+    transition: background-color var(--transition-slow) var(--ease-standard);
   }
 
-  /* Logo Styles */
   .logo {
     display: flex;
     align-items: center;
@@ -102,7 +94,7 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     font-size: 1.5rem;
     color: var(--color-text);
     text-decoration: none;
-    transition: color 0.3s;
+    transition: color var(--transition-slow) var(--ease-standard);
   }
 
   .logo-wrapper {
@@ -114,7 +106,7 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
   .logo-img {
     height: 40px;
     width: auto;
-    transition: opacity 0.3s;
+    transition: opacity var(--transition-slow) var(--ease-standard);
     position: absolute;
     top: 0;
     left: 0;
@@ -162,8 +154,8 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     height: 100%;
     position: relative;
     transition:
-      background-color 0.3s,
-      border-color 0.3s;
+      background-color var(--transition-slow) var(--ease-standard),
+      border-color var(--transition-slow) var(--ease-standard);
   }
   .switch-thumb {
     position: absolute;
@@ -177,8 +169,8 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     align-items: center;
     justify-content: center;
     transition:
-      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      background-color 0.3s;
+      transform var(--transition-slow) var(--ease-out-back),
+      background-color var(--transition-slow) var(--ease-standard);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   :global([data-theme="dark"]) .switch-thumb {
@@ -188,15 +180,15 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
   .icon-moon {
     font-size: 0.8rem;
     position: absolute;
-    transition: opacity 0.3s;
+    transition: opacity var(--transition-slow) var(--ease-standard);
   }
   .icon-sun {
     opacity: 1;
-    color: #f59e0b;
+    color: var(--color-warning-icon);
   }
   .icon-moon {
     opacity: 0;
-    color: #6366f1;
+    color: var(--color-info-icon);
   }
 
   :global([data-theme="dark"]) .icon-sun {
@@ -215,17 +207,37 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 2rem;
+    gap: var(--spacing-md);
   }
   .desktop-menu a {
     text-decoration: none;
     color: var(--color-text);
     font-weight: 700;
-    font-size: 1rem;
-    transition: color 0.3s;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    position: relative;
+    padding-bottom: 4px;
+    transition: color var(--transition-slow) var(--ease-standard);
   }
+  
+  /* Stylish underline effect for nav links */
+  .desktop-menu a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-primary);
+    transition: width var(--transition-normal) var(--ease-out-back);
+  }
+  
   .desktop-menu a:hover {
     color: var(--color-primary);
+  }
+  
+  .desktop-menu a:hover::after {
+    width: 100%;
   }
 
   /* Hamburger Menu Button */
@@ -248,12 +260,12 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     background-color: var(--color-text);
     transform: translateX(-50%);
     transition:
-      top 0.3s ease 0.3s,
-      bottom 0.3s ease 0.3s,
-      transform 0.3s ease,
-      opacity 0.3s ease,
-      background-color 0.3s,
-      width 0.3s ease;
+      top var(--transition-normal) var(--ease-standard) var(--transition-normal),
+      bottom var(--transition-normal) var(--ease-standard) var(--transition-normal),
+      transform var(--transition-normal) var(--ease-standard),
+      opacity var(--transition-normal) var(--ease-standard),
+      background-color var(--transition-slow) var(--ease-standard),
+      width var(--transition-normal) var(--ease-standard);
     border-radius: 1px;
   }
 
@@ -272,11 +284,11 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
 
   :global(body.menu-open) .menu-btn span {
     transition:
-      top 0.3s ease,
-      bottom 0.3s ease,
-      transform 0.3s ease 0.3s,
-      opacity 0.3s ease 0.3s,
-      width 0.3s ease 0.3s;
+      top var(--transition-normal) var(--ease-standard),
+      bottom var(--transition-normal) var(--ease-standard),
+      transform var(--transition-normal) var(--ease-standard) var(--transition-normal),
+      opacity var(--transition-normal) var(--ease-standard) var(--transition-normal),
+      width var(--transition-normal) var(--ease-standard) var(--transition-normal);
   }
 
   :global(body.menu-open) .menu-btn span:nth-of-type(1) {
@@ -310,7 +322,7 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     z-index: 90; /* Below header (z-100) */
 
     visibility: hidden; /* Click-through when closed */
-    transition: visibility 0.4s;
+    transition: visibility var(--transition-slow) var(--ease-standard);
   }
 
   :global(body.menu-open) .nav-menu {
@@ -328,8 +340,8 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     background-color: var(--color-bg);
     opacity: 0;
     transition:
-      opacity 0.4s ease,
-      background-color 0.3s;
+      opacity var(--transition-slow) var(--ease-standard),
+      background-color var(--transition-slow) var(--ease-standard);
     margin-top: 72px;
   }
 
@@ -353,8 +365,8 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
 
     transform: translateX(100%); /* Start off-screen right */
     transition:
-      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-      background-color 0.3s;
+      transform var(--transition-slow) var(--ease-standard),
+      background-color var(--transition-slow) var(--ease-standard);
 
     display: flex;
     flex-direction: column;
@@ -374,8 +386,8 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     opacity: 0;
     transform: translateX(20px); /* Slide slightly with list */
     transition:
-      transform 0.3s ease,
-      opacity 0.3s ease;
+      transform var(--transition-normal) var(--ease-standard),
+      opacity var(--transition-normal) var(--ease-standard);
   }
   .nav-menu a {
     display: block;
@@ -385,7 +397,7 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     text-decoration: none;
     padding: 0.5rem 0;
     white-space: nowrap; /* Prevent wrapping */
-    transition: color 0.3s;
+    transition: color var(--transition-slow) var(--ease-standard);
   }
 
   /* Staggered animation for items */

@@ -47,7 +47,7 @@ allUrls.push("/");
         align-items: center;
         min-height: 60vh;
         text-align: center;
-        padding: 2rem;
+        padding: var(--spacing-md);
     }
     .content {
         max-width: 600px;
@@ -73,19 +73,21 @@ allUrls.push("/");
     }
     button {
         background-color: var(--color-primary);
-        color: white;
+        color: #ffffff; /* Explicitly use white for primary buttons */
         border: none;
         padding: 0.8rem 1.5rem;
         font-size: 1.1rem;
+        font-weight: 600;
         border-radius: 4px;
         cursor: pointer;
         transition:
-            opacity 0.3s,
-            transform 0.2s;
+            background-color var(--transition-normal) var(--ease-standard),
+            transform var(--transition-fast) var(--ease-standard);
         font-family: var(--font-base);
     }
     button:hover {
-        opacity: 0.9;
+        background-color: var(--color-secondary);
+        color: #171717; /* High contrast text on secondary color */
         transform: translateY(-2px);
     }
     button:active {
