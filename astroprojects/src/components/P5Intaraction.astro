@@ -1,0 +1,19 @@
+<div class="p5-canvas-container"></div>
+<script>
+    import { createSketch } from "@/scripts/test.js";
+
+    const containers = document.querySelectorAll(".p5-canvas-container");
+    containers.forEach((container) => {
+        createSketch(container);
+    });
+</script>
+
+<style>
+    .p5-canvas-container {
+        width: 100%;
+        height: 50vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
