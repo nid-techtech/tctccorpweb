@@ -1,17 +1,21 @@
 /* Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+JP&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Noto+Sans+JP:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+JP&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Noto+Sans+JP:wght@100..900&display=swap');
 
 :root {
     /* Auto-generated light mode colors */
-    --color-bg: #fcfcfc; /* Off-white / light gray */
+    --color-bg: #fcfcfc;
+    /* Off-white / light gray */
     --color-text: #171717;
     /* Off-black */
     --color-primary: #1d6ef1;
-    --color-secondary: #40d5ba; /* Accent color */
+    --color-secondary: #40d5ba;
+    /* Accent color */
     --color-border: #e5e5e5;
     --color-code-bg: #f5f5f5;
     --color-bg-card: #f9f9f9;
-    --color-muted: #737373; /* For small text/dates */
+    --color-muted: #737373;
+    /* For small text/dates */
 
     /* Semantic Colors */
     --color-warning-icon: #f59e0b;
