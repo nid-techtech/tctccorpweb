@@ -1,6 +1,4 @@
 /* Global Styles */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+JP&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Noto+Sans+JP:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+JP&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Noto+Sans+JP:wght@100..900&display=swap');
 
 :root {
     /* Auto-generated light mode colors */
@@ -18,10 +16,6 @@
     /* For small text/dates */
 
     /* Semantic Colors */
-    --color-warning-icon: #f59e0b;
-    /* For sun toggle icon */
-    --color-info-icon: #6366f1;
-    /* For moon toggle icon */
 
     /* Spacing System */
     --spacing-xs: 0.5rem;
@@ -35,26 +29,12 @@
     --transition-normal: 0.3s;
     --transition-slow: 0.4s;
     --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
     /* Fonts */
+    --font-heading: 'Outfit', 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif;
     --font-base: 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif;
     --font-code: 'Fira Code', 'IBM Plex Mono', monospace;
-}
-
-[data-theme="dark"] {
-    --color-bg: #111111;
-    /* Deep black */
-    --color-text: #f5f5f5;
-    /* Off-white */
-    --color-primary: #1d6ef1;
-    /* Keeping primary vibrant */
-    --color-secondary: #40d5ba;
-    /* Keeping secondary vibrant */
-    --color-border: #262626;
-    --color-code-bg: #171717;
-    --color-bg-card: #121212;
-    --color-muted: #a3a3a3;
 }
 
 html,
@@ -68,6 +48,7 @@ body {
     height: 100%;
     width: 100%;
     overflow-x: hidden;
+    scrollbar-gutter: stable; /* スクロールバーの有無でレイアウトがズレないように常に領域を確保 */
     line-height: 1.7;
     letter-spacing: 0.03em;
     -webkit-font-smoothing: antialiased;
@@ -80,8 +61,10 @@ h3,
 h4,
 h5,
 h6 {
+    font-family: var(--font-heading);
     line-height: 1.2;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.02em;
+    /* モダンなフォントに合わせ少し詰める */
     font-weight: 700;
     margin-bottom: var(--spacing-sm);
 }
@@ -98,7 +81,7 @@ pre {
 a {
     color: var(--color-primary);
     text-decoration: none;
-    transition: color var(--transition-slow) var(--ease-standard), transform var(--transition-fast) var(--ease-standard);
+    transition: color var(--transition-slow) var(--ease-standard);
 }
 
 a:hover {
@@ -122,10 +105,50 @@ a:hover {
     animation: fadeIn 0.8s var(--ease-standard) forwards;
 }
 
+/* ==== Text Reveal Animation ==== */
+.reveal-text {
+    overflow: hidden;
+    /* 子要素が枠外から来るのを隠す */
+    display: inline-block;
+}
+
+.reveal-text>* {
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+    animation: revealUp 0.8s var(--ease-out) forwards;
+}
+
+@keyframes revealUp {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Stagger delays for multiple lines/words if needed */
+.reveal-text.stagger-1>* {
+    animation-delay: 0.1s;
+}
+
+.reveal-text.stagger-2>* {
+    animation-delay: 0.2s;
+}
+
+.reveal-text.stagger-3>* {
+    animation-delay: 0.3s;
+}
+
+
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 16px;
+    height: 16px;
 }
 
 ::-webkit-scrollbar-track {
@@ -134,7 +157,7 @@ a:hover {
 
 ::-webkit-scrollbar-thumb {
     background: var(--color-border);
-    border-radius: 4px;
+    border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

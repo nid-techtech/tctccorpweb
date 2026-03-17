@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import Preloader from "../components/Preloader.astro";
 import P5Intaraction from "../components/P5Intaraction.astro";
 import RecentPosts from "../components/RecentPosts.astro";
 
@@ -19,18 +20,19 @@ const Content = entry ? (await entry.render()).Content : null;
 ---
 
 <BaseLayout title={entry?.data.title || "Home"}>
+    <Preloader />
     <Header />
     <P5Intaraction />
     <main>
         {
             entry && Content ? (
                 <article class="prose">
-                    <h1>{entry.data.title}</h1>
+                    <h1 class="reveal-text"><span>{entry.data.title}</span></h1>
                     <Content />
                 </article>
             ) : (
                 <div>
-                    <h1>Welcome to TECH☆TECH</h1>
+                    <h1 class="reveal-text"><span>Welcome to TECH☆TECH</span></h1>
                     <p>Content is loading or missing.</p>
                 </div>
             )
