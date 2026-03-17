@@ -81,17 +81,15 @@ allUrls.push("/");
         border-radius: 4px;
         cursor: pointer;
         transition:
-            background-color var(--transition-normal) var(--ease-standard),
-            transform var(--transition-fast) var(--ease-standard);
+            background-color var(--transition-normal) var(--ease-standard);
         font-family: var(--font-base);
     }
     button:hover {
         background-color: var(--color-secondary);
         color: #171717; /* High contrast text on secondary color */
-        transform: translateY(-2px);
     }
     button:active {
-        transform: translateY(0);
+        /* クリック時も移動しないように明示（あるいは疑似クラスごと削除でもよいですがここでは枠として残します） */
     }
     .home-link {
         color: var(--color-secondary);

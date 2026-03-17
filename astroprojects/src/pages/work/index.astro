@@ -121,18 +121,12 @@ const workPosts = allDocs
         ); /* Fallback to white if var not defined */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         transition:
-            transform var(--transition-fast) var(--ease-standard),
             box-shadow var(--transition-fast) var(--ease-standard),
             background-color var(--transition-slow) var(--ease-standard),
             border-color var(--transition-slow) var(--ease-standard);
     }
-    /* Dark mode support assumption, or just good defaults */
-    :global(.dark) .post-card {
-        background: var(--color-bg-card, #222);
-    }
 
     .post-card:hover {
-        transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     .post-cover {
