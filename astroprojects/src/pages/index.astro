@@ -1,6 +1,4 @@
 ---
-import { getEntry } from "astro:content";
-import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -8,48 +6,118 @@ import Preloader from "../components/Preloader.astro";
 import P5Intaraction from "../components/P5Intaraction.astro";
 import RecentPosts from "../components/RecentPosts.astro";
 
-// Fetch specific entry for home (e.g., 'index' or 'home')
-let entry;
-try {
-    entry = await getEntry("docs", "index");
-} catch (e) {
-    console.error("Home entry not found");
-}
-// If not found, show default
-const Content = entry ? (await entry.render()).Content : null;
+const title = "TECH☆TECH";
+const description =
+    "A collective of developers and creators pushing the boundaries of technology and design.";
 ---
 
-<BaseLayout title={entry?.data.title || "Home"}>
+<BaseLayout title={title} description={description}>
     <Preloader />
     <Header />
-    <P5Intaraction />
+    <div class="hero-container">
+        <P5Intaraction class="p5-top" />
+        <section class="top">
+            <h1 class="hero-title">
+                <span class="reveal-text"><span>Design,</span></span><br />
+                <span class="reveal-text stagger-1"
+                    ><span>Technology,</span></span
+                ><br />
+                <span class="reveal-text stagger-2"><span>Play.</span></span>
+            </h1>
+        </section>
+    </div>
     <main>
-        {
-            entry && Content ? (
-                <article class="prose">
-                    <h1 class="reveal-text"><span>{entry.data.title}</span></h1>
-                    <Content />
-                </article>
-            ) : (
-                <div>
-                    <h1 class="reveal-text"><span>Welcome to TECH☆TECH</span></h1>
-                    <p>Content is loading or missing.</p>
-                </div>
-            )
-        }
-
-        <RecentPosts count={5} />
+        <section class="about">
+            <p class="about-title">_about</p>
+            <h2>What is TECH☆TECH?</h2>
+            <p>
+                私たちはデザイン、テクノロジーはたまた遊びなど、分野を問わずに相互に情報を共有、実践するサークルです。
+            </p>
+            <p>
+                長岡造形大学の公認学生サークルとして毎年各種イベントに参加しています。
+            </p>
+        </section>
+        <section class="content">
+            <RecentPosts count={3} />
+        </section>
     </main>
     <Footer />
 </BaseLayout>
 
 <style>
     main {
-        max-width: 1080px;
-        margin: 0 auto;
-        padding: var(--spacing-lg) var(--spacing-sm);
+        margin: 0;
+        margin-left: 10vw;
+        margin-right: 10vw;
+        padding: var(--spacing-xl) var(--spacing-md);
     }
-    .prose {
-        line-height: 1.6;
+
+    .hero-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    .p5-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    .top {
+        position: absolute;
+        bottom: calc(var(--spacing-xl) + 4vw);
+        left: calc(var(--spacing-md) + 10vw);
+        z-index: 10;
+        pointer-events: none;
+        color: #000000;
+    }
+
+    .about-title {
+        font-size: 1rem;
+        font-weight: 100;
+        margin: 0;
+        font-family: var(--font-code);
+    }
+
+    h1 {
+        font-size: clamp(2.5rem, 10vw, 8rem);
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    h2 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        font-weight: 400;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .content {
+        animation: fadeIn 1s var(--ease-standard) 0.4s forwards;
+        opacity: 0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        main {
+            padding: var(--spacing-lg) var(--spacing-sm);
+        }
     }
 </style>

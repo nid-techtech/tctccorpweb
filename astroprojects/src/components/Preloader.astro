@@ -11,6 +11,8 @@
             "--preloader-display",
             "none",
         );
+        // 既に訪問済みなら即座にアニメーションを許可
+        document.documentElement.classList.add("is-loaded");
     } else {
         // 初回訪問時
         sessionStorage.setItem("visited_techtech", "true");
@@ -130,6 +132,8 @@
             // シークバー終了（1.5秒）を待って少し余韻を残しフェードアウト
             setTimeout(() => {
                 preloader.classList.add("fade-out");
+                // プレローダーが消え始めたタイミングでコンテンツの表示を開始
+                document.documentElement.classList.add("is-loaded");
             }, 1600);
 
             // フェードアウト後、DOMから表示を消す（クリックの妨げを完全排除）
