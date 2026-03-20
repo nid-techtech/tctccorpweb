@@ -16,13 +16,17 @@ export const createSketch = (targetElement) => {
             const canvas = p.createCanvas(targetElement.offsetWidth, targetElement.offsetHeight);
             canvas.parent(targetElement);
 
-            p.noStroke();
-            p.fill(255);
+            // p.noStroke();
+            // p.fill(255);
+            p.stroke(0);
+            p.strokeWeight(2);
+            p.noFill();
+            p.pixelDensity(1);
         }
 
         p.draw = () => {
             p.blendMode(p.BLEND);
-            p.background(255);
+            p.clear();
             p.blendMode(p.DIFFERENCE);
 
             nodeSize = 200 + 100 * p.sin(p.TAU * p.sin(p.frameCount * 0.002));
