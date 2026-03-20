@@ -25,6 +25,7 @@
     --spacing-xl: 8rem;
 
     /* Animations & Transitions */
+    --transition-rapid: 0.1s;
     --transition-fast: 0.2s;
     --transition-normal: 0.3s;
     --transition-slow: 0.4s;
@@ -37,19 +38,22 @@
     --font-code: 'Fira Code', 'IBM Plex Mono', monospace;
 }
 
-html,
+html {
+    height: 100%;
+    scrollbar-gutter: stable;
+    overflow-y: auto;
+}
+
 body {
+    min-height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
     font-family: var(--font-base);
     background-color: var(--color-bg);
     color: var(--color-text);
     transition: background-color var(--transition-slow) var(--ease-standard), color var(--transition-slow) var(--ease-standard);
-    height: 100%;
-    width: 100%;
     overflow-x: hidden;
-    scrollbar-gutter: stable;
-    /* スクロールバーの有無でレイアウトがズレないように常に領域を確保 */
     line-height: 1.7;
     letter-spacing: 0.03em;
     -webkit-font-smoothing: antialiased;

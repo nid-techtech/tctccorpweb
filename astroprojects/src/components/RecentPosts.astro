@@ -3,20 +3,19 @@ import { getCollection } from "astro:content";
 
 interface Props {
   count?: number;
-  filterPath?: string; // e.g., 'blog' to show only blog posts
+  filterTag?: string; // e.g., 'blog' to show only blog posts
 }
 
-const { count = 5, filterPath } = Astro.props; // もし、5件以上表示したいなら、countを変えてください
+const { count = 5, filterTag } = Astro.props;
 
 const allDocs = await getCollection("docs");
 const sortedDocs = allDocs
-  .filter((doc) => !filterPath || doc.slug.startsWith(filterPath))
+  .filter((doc) => !filterTag || doc.data.tags.includes(filterTag))
   .filter((doc) => doc.slug !== "index") // Exclude home page itself
+  .filter((doc) => import.meta.env.DEV || !doc.data.draft) // Filter out drafts
   .sort((a, b) => {
-    // Sort by created_at or updated_at. Our script added both.
-    // Assuming schema is loose, we access data directly.
-    const dateA = new Date(a.data.updated_at || a.data.created_at || 0);
-    const dateB = new Date(b.data.updated_at || b.data.created_at || 0);
+    const dateA = new Date(a.data.updated_at ?? a.data.created_at);
+    const dateB = new Date(b.data.updated_at ?? b.data.created_at);
     return dateB.getTime() - dateA.getTime();
   })
   .slice(0, count);
@@ -29,7 +28,31 @@ const sortedDocs = allDocs
       sortedDocs.map((doc) => (
         <li>
           <a href={`/${doc.slug}`}>
-            <span class="title">{doc.data.title || doc.slug}</span>
+            <div class="post-info">
+              <span class="title">{doc.data.title || doc.slug}</span>
+              {doc.data.tags && doc.data.tags.length > 0 && (
+                <div class="post-tags">
+                  {doc.data.tags.map((tag) =>
+                    filterTag &&
+                    tag.toLowerCase() === filterTag.toLowerCase() ? (
+                      <span
+                        class="tag inactive"
+                        onclick="event.preventDefault(); event.stopPropagation();"
+                      >
+                        #{tag}
+                      </span>
+                    ) : (
+                      <span
+                        class="tag link"
+                        onclick={`event.preventDefault(); event.stopPropagation(); window.location.href='/${tag}';`}
+                      >
+                        #{tag}
+                      </span>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
             <span class="date">
               {doc.data.created_at &&
                 new Date(doc.data.created_at).toLocaleDateString()}
@@ -46,7 +69,7 @@ const sortedDocs = allDocs
     margin-top: var(--spacing-lg);
     border-top: 1px solid var(--color-border);
     padding-top: var(--spacing-md);
-    transition: border-color var(--transition-slow) var(--ease-standard);
+    transition: border-color var(--transition-slow) var(--ease-out);
   }
   h3 {
     margin-bottom: var(--spacing-sm);
@@ -67,8 +90,8 @@ const sortedDocs = allDocs
     border-radius: 6px;
     background-color: transparent;
     transition:
-      background-color var(--transition-slow) var(--ease-standard),
-      box-shadow var(--transition-normal) var(--ease-standard);
+      background-color var(--transition-slow) var(--ease-out),
+      box-shadow var(--transition-normal) var(--ease-out);
   }
   a:hover {
     background-color: var(--color-bg-card);
@@ -79,13 +102,42 @@ const sortedDocs = allDocs
     color: var(--color-text);
     transition: color var(--transition-slow) var(--ease-standard);
   }
-  a:hover .title {
+
+  .post-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .post-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.8rem;
     color: var(--color-primary);
+  }
+  .tag.link {
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity var(--transition-fast) var(--ease-standard);
+  }
+  .tag.link:hover {
+    text-decoration: underline;
+    opacity: 0.7;
+  }
+  .tag.inactive {
+    color: #888 !important;
+    cursor: default;
+    opacity: 0.8;
+    pointer-events: auto; /* To catch clicks and stop propagation */
   }
   .date {
     font-size: 0.85rem;
     color: var(--color-muted);
     font-family: var(--font-base);
     transition: color var(--transition-slow) var(--ease-standard);
+    min-width: 100px;
+    text-align: right;
   }
 </style>
