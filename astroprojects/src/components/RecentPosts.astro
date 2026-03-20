@@ -23,7 +23,7 @@ const sortedDocs = allDocs
 ---
 
 <div class="recent-posts">
-  <h3>New Arrivals</h3>
+  <p class="eyebrow-heading">_recent_posts</p>
   <ul>
     {
       sortedDocs.map((doc) => (
@@ -66,7 +66,9 @@ const sortedDocs = allDocs
     padding: var(--spacing-sm);
     border-radius: 6px;
     background-color: transparent;
-    transition: background-color var(--transition-slow) var(--ease-standard), box-shadow var(--transition-normal) var(--ease-standard);
+    transition:
+      background-color var(--transition-slow) var(--ease-standard),
+      box-shadow var(--transition-normal) var(--ease-standard);
   }
   a:hover {
     background-color: var(--color-bg-card);
