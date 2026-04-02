@@ -1,27 +1,44 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
+import Preloader from "../components/Preloader.astro";
+import P5Intaraction from "../components/P5Intaraction.astro";
 import { getCollection } from "astro:content";
 
 const allDocs = await getCollection("docs");
 const allUrls = allDocs.map((doc) => `/${doc.slug}/`);
 allUrls.push("/");
+
+const title = "404: Not Found";
+const description = "ページが見つかりません";
 ---
 
-<BaseLayout title="404: Not Found" description="ページが見つかりません">
+<BaseLayout title={title} description={description}>
+    <Preloader />
     <Header />
-    <main class="error-page">
-        <div class="content">
-            <h1>404</h1>
-            <p>指定されたリンク先が存在しないです。</p>
-            <div class="actions">
-                <button id="random-btn">ランダムなページへ</button>
-                <a href="/" class="home-link">ホームに戻る</a>
+    <div class="hero-container">
+        <P5Intaraction class="p5-top" config={{ qty: 12, isVisible: false }} />
+        <section class="top">
+            <h1 class="hero-title">
+                <span class="reveal-text"><span>404</span></span><br />
+                <span class="reveal-text stagger-1"
+                    ><span>Lost in space.</span></span
+                >
+            </h1>
+            <p class="hero-description reveal-text stagger-2">
+                <span>指定されたリンク先が存在しないようです。</span>
+            </p>
+            <div class="hero-links reveal-text stagger-3">
+                <a href="/" class="hero-link">Return Home</a>
+                <button id="random-btn" class="hero-link"
+                    >Warp to Random Page</button
+                >
             </div>
+        </section>
+        <div class="copyright reveal-text stagger-3">
+            &copy; TECH☆TECH 2021-2026
         </div>
-    </main>
-    <Footer />
+    </div>
 </BaseLayout>
 
 <script define:vars={{ allUrls }}>
@@ -29,9 +46,6 @@ allUrls.push("/");
     if (btn) {
         btn.addEventListener("click", () => {
             if (allUrls && allUrls.length > 0) {
-                // 自分自身のページ(404)に再遷移しても意味がないのですが、
-                // 404ページのURLは不定（ユーザーが入力したURL）なので除外は難しいですが、
-                // allUrlsには有効なページしか入っていないので、どれを選んでもOKです。
                 const randomUrl =
                     allUrls[Math.floor(Math.random() * allUrls.length)];
                 window.location.href = randomUrl;
@@ -41,62 +55,101 @@ allUrls.push("/");
 </script>
 
 <style>
-    .error-page {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 60vh;
-        text-align: center;
-        padding: var(--spacing-md);
-    }
-    .content {
-        max-width: 600px;
-    }
-    h1 {
-        font-size: 6rem;
+    :global(html, body) {
+        overflow: hidden;
+        height: 100vh;
         margin: 0;
-        line-height: 1;
-        color: var(--color-primary);
-        font-family: var(--font-code);
+        scrollbar-gutter: auto !important;
     }
-    p {
-        font-size: 1.5rem;
-        margin: 1rem 0 2.5rem;
-        color: var(--color-text);
-    }
-    .actions {
+
+    :global(body) {
         display: flex;
+        flex-direction: column;
+    }
+
+    .hero-container {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    .p5-top {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .p5-top {
+            width: 100%;
+            top: 15vh;
+        }
+    }
+
+    .top {
+        position: absolute;
+        top: 5vw;
+        left: 8vw;
+        z-index: 10;
+        pointer-events: none;
+        color: #000000;
+    }
+
+    .hero-links {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
         gap: 1.5rem;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
+        pointer-events: auto;
     }
-    button {
-        background-color: var(--color-primary);
-        color: #ffffff; /* Explicitly use white for primary buttons */
-        border: none;
-        padding: 0.8rem 1.5rem;
-        font-size: 1.1rem;
-        font-weight: 600;
-        border-radius: 4px;
-        cursor: pointer;
-        transition:
-            background-color var(--transition-normal) var(--ease-standard);
-        font-family: var(--font-base);
-    }
-    button:hover {
-        background-color: var(--color-secondary);
-        color: #171717; /* High contrast text on secondary color */
-    }
-    button:active {
-        /* クリック時も移動しないように明示（あるいは疑似クラスごと削除でもよいですがここでは枠として残します） */
-    }
-    .home-link {
-        color: var(--color-secondary);
+
+    .hero-link {
+        font-family: var(--font-heading);
+        font-size: clamp(1rem, 2vw, 1.5rem);
+        font-weight: 400;
+        color: var(--color-text);
         text-decoration: underline;
-        font-size: 1.1rem;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+        width: fit-content;
+        transition: color var(--transition-slow) var(--ease-standard);
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        text-align: left;
     }
-    .home-link:hover {
+
+    .hero-link:hover {
         color: var(--color-primary);
+    }
+
+    .copyright {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        font-family: var(--font-base);
+        font-size: clamp(0.7rem, 2vw, 0.9rem);
+        color: var(--color-text);
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 10vh, 10vw);
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .hero-description {
+        font-size: clamp(1rem, 3vh, 2vw);
+        margin: 1rem 0 0;
+        color: var(--color-muted);
     }
 </style>

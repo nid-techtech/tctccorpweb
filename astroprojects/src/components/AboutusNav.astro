@@ -1,0 +1,100 @@
+---
+const path = Astro.url.pathname;
+
+const links = [
+    { href: "/aboutus", label: "TECH☆TECHとは？" },
+    { href: "/aboutus/activities", label: "普段の活動" },
+    { href: "/aboutus/poweredby", label: "Powered by TECH☆TECH" },
+    { href: "/aboutus/relationship", label: "関連団体" },
+    { href: "/aboutus/contact", label: "コンタクト" },
+];
+
+function isActive(href: string) {
+    if (href === "/aboutus") {
+        return path === "/aboutus" || path === "/aboutus/";
+    }
+    return path.startsWith(href);
+}
+---
+
+<nav class="aboutus-nav">
+    <div class="nav-header">
+        <span class="nav-title">サークル概要</span>
+    </div>
+    <ul class="nav-list">
+        {links.map((link) => (
+            <li>
+                <a href={link.href} class:list={["nav-link", { "is-active": isActive(link.href) }]}>
+                    {link.label}
+                </a>
+            </li>
+        ))}
+    </ul>
+</nav>
+
+<style>
+    .nav-header {
+        margin-bottom: 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--color-border);
+    }
+    .nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .nav-link {
+        display: block;
+        padding: 0.5rem;
+        color: var(--color-text);
+        text-decoration: none;
+        border-radius: 4px;
+        transition: color var(--transition-fast) var(--ease-standard),
+                    background-color var(--transition-fast) var(--ease-standard);
+    }
+    .nav-link:hover {
+        background-color: var(--color-code-bg);
+    }
+    .nav-link.is-active {
+        color: var(--color-primary);
+        font-weight: 600;
+        background-color: transparent;
+    }
+
+    @media (max-width: 899px) {
+        .aboutus-nav {
+            margin-bottom: 1rem;
+        }
+        .nav-header {
+            display: none; /* Hide the big title to be less noisy on mobile */
+        }
+        .nav-list {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            /* Give it a slight border on mobile to contain the list */
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .nav-link {
+            padding: 0.2rem 0;
+            font-size: 0.95rem;
+            color: var(--color-muted);
+        }
+        .nav-link.is-active {
+            color: var(--color-primary);
+            border-bottom: 1px solid var(--color-primary);
+            border-radius: 0;
+            padding-bottom: 0.1rem;
+        }
+        .nav-link:hover {
+            background-color: transparent;
+            color: var(--color-text);
+        }
+    }
+</style>

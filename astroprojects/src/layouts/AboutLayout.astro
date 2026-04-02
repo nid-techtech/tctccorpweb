@@ -1,0 +1,309 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import AboutusNav from "../components/AboutusNav.astro";
+
+interface Props {
+    title: string;
+    description?: string;
+    headerImage?: string;
+    headerTitle?: string;
+    headerSubtitle?: string;
+    headerDescription?: string;
+}
+
+const { title, description, headerImage, headerTitle, headerSubtitle, headerDescription } = Astro.props;
+
+const path = Astro.url.pathname;
+const links = [
+    { href: "/aboutus", label: "TECH☆TECHとは？" },
+    { href: "/aboutus/activities", label: "普段の活動" },
+    { href: "/aboutus/poweredby", label: "Powered by TECH☆TECH" },
+    { href: "/aboutus/relationship", label: "関連団体" },
+    { href: "/aboutus/contact", label: "コンタクト" },
+];
+
+const currentLinkIndex = links.findIndex((link) => {
+    if (link.href === "/aboutus") {
+        return path === "/aboutus" || path === "/aboutus/";
+    }
+    return path.startsWith(link.href);
+});
+
+const prevPage = currentLinkIndex > 0 ? links[currentLinkIndex - 1] : null;
+const nextPage =
+    currentLinkIndex >= 0 && currentLinkIndex < links.length - 1
+        ? links[currentLinkIndex + 1]
+        : null;
+---
+
+<BaseLayout title={title} description={description}>
+    <Header />
+    
+    {
+        headerImage && headerTitle && (
+            <section class="aboutus-hero" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url('${headerImage}');`}>
+                <div class="hero-inner">
+                    {headerSubtitle && <span class="hero-subtitle">{headerSubtitle}</span>}
+                    <h1 class="hero-title">{headerTitle}</h1>
+                    {headerDescription && <p class="hero-description">{headerDescription}</p>}
+                </div>
+            </section>
+        )
+    }
+
+    <main class="aboutus-main">
+        <aside class="aboutus-sidebar">
+            <AboutusNav />
+        </aside>
+        <div class="aboutus-wrapper">
+            <div class="aboutus-content prose">
+                <slot />
+            </div>
+
+            <nav class="aboutus-pagination">
+                {
+                    prevPage ? (
+                        <a href={prevPage.href} class="pagination-link prev">
+                            <span class="arrow">← 前のページ</span>
+                            <span class="label">{prevPage.label}</span>
+                        </a>
+                    ) : (
+                        <div class="pagination-spacer" />
+                    )
+                }
+
+                {
+                    nextPage ? (
+                        <a href={nextPage.href} class="pagination-link next">
+                            <span class="arrow">次のページ →</span>
+                            <span class="label">{nextPage.label}</span>
+                        </a>
+                    ) : (
+                        <div class="pagination-spacer" />
+                    )
+                }
+            </nav>
+        </div>
+    </main>
+    <Footer />
+</BaseLayout>
+
+<style is:global>
+    /* Hero Header */
+    .aboutus-hero {
+        width: 100%;
+        min-height: 40vh;
+        background-color: #222;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        font-family: 'Outfit', 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 3rem 1rem;
+        position: relative;
+        z-index: 10;
+    }
+    .aboutus-hero .hero-inner {
+        max-width: 1000px;
+        position: relative;
+        z-index: 11;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .aboutus-hero .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        color: #ffffff !important;
+        line-height: 1.2;
+        font-family: 'Outfit', 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif;
+    }
+    .aboutus-hero .hero-subtitle {
+        display: block;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        color: #eeeeee !important;
+        text-transform: uppercase;
+        text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+    }
+    .aboutus-hero .hero-description {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-top: 1rem;
+        color: #ffffff !important;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+    @media (min-width: 768px) {
+        .aboutus-hero {
+            min-height: 50vh;
+        }
+        .aboutus-hero .hero-title {
+            font-size: 4rem;
+        }
+        .aboutus-hero .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .aboutus-hero .hero-description {
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+        }
+    }
+</style>
+
+<style>
+
+    .aboutus-main {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .aboutus-sidebar {
+        width: 100%;
+    }
+    .aboutus-wrapper {
+        width: 100%;
+        animation: fadeIn 0.4s var(--ease-out) forwards;
+    }
+    .aboutus-content {
+        line-height: 1.8;
+        width: 100%;
+    }
+
+    /* Make content beautiful and original */
+    .aboutus-content :global(h1) {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+    .aboutus-content :global(h2) {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+    .aboutus-content :global(.subtitle) {
+        color: var(--color-muted);
+        font-style: italic;
+        margin-bottom: 2.5rem;
+        display: block;
+        font-weight: bold;
+        letter-spacing: 0.1em;
+    }
+    .aboutus-content :global(p) {
+        margin-bottom: 1.5rem;
+    }
+    .aboutus-content :global(img) {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-block: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    .aboutus-content :global(hr) {
+        border: 0;
+        height: 1px;
+        background: var(--color-border);
+        margin: 3rem 0;
+    }
+    .aboutus-content :global(blockquote) {
+        border-left: 4px solid var(--color-primary);
+        padding-left: 1.5rem;
+        font-style: italic;
+        color: var(--color-text);
+        margin: 2rem 0;
+        background: var(--color-code-bg);
+        padding: 1rem 1rem 1rem 1.5rem;
+        border-radius: 0 8px 8px 0;
+        font-size: 0.95rem;
+    }
+    .aboutus-content :global(ul) {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .aboutus-content :global(li) {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Pagination */
+    .aboutus-pagination {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-top: 4rem;
+        border-top: 1px solid var(--color-border);
+    }
+    .pagination-link {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--color-text);
+        font-weight: 500;
+        padding: 1.5rem 1rem;
+        transition: background-color var(--transition-fast) var(--ease-standard);
+    }
+    .pagination-link:hover {
+        background-color: var(--color-code-bg);
+    }
+    .pagination-link .arrow {
+        color: var(--color-muted);
+        font-size: 0.9rem;
+        transition: color var(--transition-fast) var(--ease-standard);
+    }
+    .pagination-link:hover .arrow {
+        color: var(--color-primary);
+    }
+    .pagination-link .label {
+        font-size: 1.1rem;
+        color: var(--color-primary);
+    }
+    .pagination-link.prev {
+        align-items: flex-start;
+        text-align: left;
+        border-right: 1px solid var(--color-border);
+    }
+    .pagination-link.next {
+        align-items: flex-end;
+        text-align: right;
+    }
+    .pagination-spacer {
+        border-right: 1px solid var(--color-border);
+    }
+    .pagination-spacer:last-child {
+        border-right: none;
+    }
+
+    @media (min-width: 900px) {
+        .aboutus-main {
+            grid-template-columns: 250px minmax(0, 1080px) 250px;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem 1rem;
+        }
+        .aboutus-sidebar {
+            grid-column: 1;
+            position: -webkit-sticky;
+            position: sticky;
+            top: 6rem;
+            align-self: start;
+        }
+        .aboutus-wrapper {
+            grid-column: 2;
+        }
+        /* The third column is left empty to ensure the center column is perfectly centered on the screen */
+    }
+</style>
