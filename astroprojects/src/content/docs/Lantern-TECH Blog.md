@@ -8,7 +8,7 @@ subtitle: ""
 description: "VibeCodingにより超高速でサイト作成"
 updated_at: "2026-04-03"
 cover: "https://i.imgur.com/mWCPhIk.png"
-tags: ["blog","works","web","astro","vivecoding"]
+tags: ["blog","works","web","astro","vibecoding"]
 author: "大渕凜"
 
 ---
