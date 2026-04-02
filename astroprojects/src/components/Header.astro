@@ -1,15 +1,7 @@
 ---
-import { getCollection } from "astro:content";
-
 import { Image } from "astro:assets";
-// Setup navigation data
-const allDocs = await getCollection("docs");
-// Helper to build tree function omitted for brevity as it is unused in the previous snippet,
-// using simple list as per previous placeholder. If recursive needed, can re-add.
-// Focusing on UI request.
 
 import logoBlack from "../assets/logo_square_black_alpha.webp";
-import logoWhite from "../assets/logo_square_white_alpha.webp";
 ---
 
 <header>
@@ -19,14 +11,7 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
         <Image
           src={logoBlack}
           alt="Logo"
-          class="logo-img light-logo"
-          loading="eager"
-          fetchpriority="high"
-        />
-        <Image
-          src={logoWhite}
-          alt="Logo"
-          class="logo-img dark-logo"
+          class="logo-img"
           loading="eager"
           fetchpriority="high"
         />
@@ -38,20 +23,13 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     <nav class="desktop-menu">
       <ul>
         <li><a href="/">HOME</a></li>
-        <li><a href="/about/whatistechtech">ABOUT</a></li>
-        <li><a href="/blog">BLOG</a></li>
-        <li><a href="/work">WORK</a></li>
+        <li><a href="/aboutus">ABOUT</a></li>
+        <li><a href="/works">WORKS</a></li>
+        <li><a href="/all">ALL</a></li>
+        <li><a href="/aboutus/contact">CONTACT</a></li>
       </ul>
     </nav>
     <div class="controls">
-      <button id="theme-toggle" aria-label="Toggle Theme" class="theme-switch">
-        <div class="switch-track">
-          <div class="switch-thumb">
-            <span class="icon-sun">☀</span>
-            <span class="icon-moon">☾</span>
-          </div>
-        </div>
-      </button>
       <button id="menu-toggle" aria-label="Toggle Menu" class="menu-btn">
         <span></span>
         <span></span>
@@ -62,48 +40,54 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
   <nav id="nav-menu" class="nav-menu">
     <ul>
       <li><a href="/">HOME</a></li>
-      <li><a href="/about/whatistechtech">ABOUT</a></li>
-      <li><a href="/blog">BLOG</a></li>
-      <li><a href="/work">WORK</a></li>
-      <!-- Add more links as needed or generate dynamically -->
+      <li><a href="/aboutus">ABOUT</a></li>
+      <li><a href="/works">WORKS</a></li>
+      <li><a href="/all">ALL</a></li>
+      <li><a href="/aboutus/contact">CONTACT</a></li>
     </ul>
   </nav>
 </header>
 
 <style>
   header {
+    width: 100%;
     background-color: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
-    padding: 1rem;
+    padding: var(--spacing-sm) var(--spacing-md);
     position: sticky;
     top: 0;
     z-index: 100;
     transition:
-      background-color 0.3s,
-      border-color 0.3s;
+      background-color var(--transition-slow) var(--ease-standard),
+      border-color var(--transition-slow) var(--ease-standard),
+      box-shadow var(--transition-slow) var(--ease-standard);
+  }
+
+  :global(body.menu-open) header {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-bottom-color: transparent;
   }
   .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
     margin: 0 auto;
     position: relative;
     z-index: 101; /* Above nav menu */
     background-color: var(--color-bg); /* Ensure opacity */
-    transition: background-color 0.3s;
+    transition: background-color var(--transition-slow) var(--ease-standard);
   }
 
-  /* Logo Styles */
   .logo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-family: var(--font-heading);
     font-weight: 700;
     font-size: 1.5rem;
     color: var(--color-text);
     text-decoration: none;
-    transition: color 0.3s;
+    transition: color var(--transition-slow) var(--ease-standard);
   }
 
   .logo-wrapper {
@@ -115,28 +99,10 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
   .logo-img {
     height: 40px;
     width: auto;
-    transition: opacity 0.3s;
+    transition: opacity var(--transition-slow) var(--ease-standard);
     position: absolute;
     top: 0;
     left: 0;
-  }
-
-  /* Default state (Light Mode) */
-  .logo-img.light-logo {
-    opacity: 1;
-    z-index: 2;
-  }
-  .logo-img.dark-logo {
-    opacity: 0;
-    z-index: 1;
-  }
-
-  /* Dark Mode Handlers */
-  :global([data-theme="dark"]) .logo-img.light-logo {
-    opacity: 0;
-  }
-  :global([data-theme="dark"]) .logo-img.dark-logo {
-    opacity: 1;
   }
 
   /* Controls */
@@ -144,67 +110,6 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     display: flex;
     gap: 1rem;
     align-items: center;
-  }
-
-  /* Theme Toggle Switch */
-  .theme-switch {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 60px;
-    height: 30px;
-    position: relative;
-  }
-  .switch-track {
-    background-color: var(--color-border);
-    border-radius: 30px;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transition:
-      background-color 0.3s,
-      border-color 0.3s;
-  }
-  .switch-thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 26px;
-    height: 26px;
-    background-color: var(--color-bg);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition:
-      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      background-color 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  :global([data-theme="dark"]) .switch-thumb {
-    transform: translateX(30px);
-  }
-  .icon-sun,
-  .icon-moon {
-    font-size: 0.8rem;
-    position: absolute;
-    transition: opacity 0.3s;
-  }
-  .icon-sun {
-    opacity: 1;
-    color: #f59e0b;
-  }
-  .icon-moon {
-    opacity: 0;
-    color: #6366f1;
-  }
-
-  :global([data-theme="dark"]) .icon-sun {
-    opacity: 0;
-  }
-  :global([data-theme="dark"]) .icon-moon {
-    opacity: 1;
   }
 
   /* Desktop Menu (Ribbon) */
@@ -216,17 +121,38 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 2rem;
+    gap: var(--spacing-md);
   }
   .desktop-menu a {
     text-decoration: none;
     color: var(--color-text);
+    font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 1rem;
-    transition: color 0.3s;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    position: relative;
+    padding-bottom: 4px;
+    transition: color var(--transition-slow) var(--ease-standard);
   }
+
+  /* Stylish underline effect for nav links */
+  .desktop-menu a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-primary);
+    transition: width var(--transition-normal) var(--ease-standard);
+  }
+
   .desktop-menu a:hover {
     color: var(--color-primary);
+  }
+
+  .desktop-menu a:hover::after {
+    width: 100%;
   }
 
   /* Hamburger Menu Button */
@@ -248,7 +174,14 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     height: 2px;
     background-color: var(--color-text);
     transform: translateX(-50%);
-    transition: top 0.3s ease 0.3s, bottom 0.3s ease 0.3s, transform 0.3s ease, opacity 0.3s ease, background-color 0.3s, width 0.3s ease;
+    transition:
+      top var(--transition-normal) var(--ease-standard) var(--transition-normal),
+      bottom var(--transition-normal) var(--ease-standard)
+        var(--transition-normal),
+      transform var(--transition-normal) var(--ease-standard),
+      opacity var(--transition-normal) var(--ease-standard),
+      background-color var(--transition-slow) var(--ease-standard),
+      width var(--transition-normal) var(--ease-standard);
     border-radius: 1px;
   }
 
@@ -266,7 +199,15 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
   }
 
   :global(body.menu-open) .menu-btn span {
-    transition: top 0.3s ease, bottom 0.3s ease, transform 0.3s ease 0.3s, opacity 0.3s ease 0.3s, width 0.3s ease 0.3s;
+    transition:
+      top var(--transition-normal) var(--ease-standard),
+      bottom var(--transition-normal) var(--ease-standard),
+      transform var(--transition-normal) var(--ease-standard)
+        var(--transition-normal),
+      opacity var(--transition-normal) var(--ease-standard)
+        var(--transition-normal),
+      width var(--transition-normal) var(--ease-standard)
+        var(--transition-normal);
   }
 
   :global(body.menu-open) .menu-btn span:nth-of-type(1) {
@@ -287,20 +228,15 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
 
   /* Mobile Navigation Menu */
   .nav-menu {
-    position: fixed; /* Cover entire viewport */
-    top: 73px; /* Approximate header height. Adjust if needed or use JS */
-    /* Note: Since header is sticky, top: 100% of header might allow content to be covered if using absolute. 
-       Fixed is safer for overlay behavior but needs top offset matching header. 
-       Let's stick to absolute relative to header if header is container? 
-       No, let's use fixed Top: 0 and z-index below header to cover full screen. */
-    top: 0;
+    position: absolute; /* Relative to <header> which is relative/sticky */
+    top: 100%; /* Directly below the header */
     left: 0;
     width: 100%;
-    height: 100vh;
-    z-index: 90; /* Below header (z-100) */
+    height: 100vh; /* Will cover viewport. Ideally calc(100vh - headerHeight) but we'll manage via overflow */
+    z-index: 90;
 
     visibility: hidden; /* Click-through when closed */
-    transition: visibility 0.4s;
+    transition: visibility var(--transition-slow) var(--ease-standard);
   }
 
   :global(body.menu-open) .nav-menu {
@@ -314,13 +250,12 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh; /* Ensure we cover everything below the header */
     background-color: var(--color-bg);
     opacity: 0;
     transition:
-      opacity 0.4s ease,
-      background-color 0.3s;
-    margin-top: 72px;
+      opacity var(--transition-slow) var(--ease-standard),
+      background-color var(--transition-slow) var(--ease-standard);
   }
 
   :global(body.menu-open) .nav-menu::before {
@@ -333,7 +268,6 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     list-style: none;
     padding: 2rem 6rem 2rem 2rem; /* Right padding larger as requested */
     margin: 0;
-    margin-top: 72px;
     margin-left: auto; /* Align to right */
     text-align: left;
 
@@ -343,8 +277,8 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
 
     transform: translateX(100%); /* Start off-screen right */
     transition:
-      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-      background-color 0.3s;
+      transform var(--transition-slow) var(--ease-standard),
+      background-color var(--transition-slow) var(--ease-standard);
 
     display: flex;
     flex-direction: column;
@@ -364,18 +298,19 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     opacity: 0;
     transform: translateX(20px); /* Slide slightly with list */
     transition:
-      transform 0.3s ease,
-      opacity 0.3s ease;
+      transform var(--transition-normal) var(--ease-standard),
+      opacity var(--transition-normal) var(--ease-standard);
   }
   .nav-menu a {
     display: block;
+    font-family: var(--font-heading);
     font-weight: 700;
     font-size: 1.4rem;
     color: var(--color-text);
     text-decoration: none;
     padding: 0.5rem 0;
     white-space: nowrap; /* Prevent wrapping */
-    transition: color 0.3s;
+    transition: color var(--transition-slow) var(--ease-standard);
   }
 
   /* Staggered animation for items */
@@ -395,6 +330,9 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
   :global(body.menu-open) .nav-menu li:nth-child(4) {
     transition-delay: 0.35s;
   }
+  :global(body.menu-open) .nav-menu li:nth-child(5) {
+    transition-delay: 0.4s;
+  }
 
   /* Responsive Media Queries */
   @media (min-width: 768px) {
@@ -410,8 +348,7 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
     }
     /* Controls adjustment: Move theme toggle to right, keep desktop menu in middle or right */
     .header-content {
-      justify-content: flex-start;
-      gap: 2rem;
+      justify-content: space-between;
     }
     .controls {
       margin-left: 0;
@@ -426,16 +363,7 @@ import logoWhite from "../assets/logo_square_white_alpha.webp";
 </style>
 
 <script>
-  const themeToggle = document.getElementById("theme-toggle");
   const menuToggle = document.getElementById("menu-toggle");
-
-  // Theme Toggle
-  themeToggle?.addEventListener("click", () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-  });
 
   // Menu Toggle (Click only)
   menuToggle?.addEventListener("click", () => {

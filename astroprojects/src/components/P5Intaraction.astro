@@ -1,0 +1,26 @@
+---
+interface Props {
+    class?: string;
+    config?: Record<string, unknown>;
+    [key: string]: unknown;
+}
+
+const { class: className, config = {}, ...rest } = Astro.props;
+---
+
+<div
+    class:list={["p5-canvas-container", className]}
+    data-config={JSON.stringify(config)}
+    {...rest}
+>
+</div>
+
+<script>
+    import { createSketch } from "@/scripts/test.js";
+
+    const containers = document.querySelectorAll<HTMLElement>(".p5-canvas-container");
+    containers.forEach((container) => {
+        const config = JSON.parse(container.dataset.config || "{}");
+        createSketch(container, config);
+    });
+</script>
