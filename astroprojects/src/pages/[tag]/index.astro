@@ -1,0 +1,279 @@
+---
+/**
+ * タグ別コンテンツ一覧ページ
+ * tags フィールドの値をもとに動的ルーティングを行う。
+ * /blog, /work, /about 等のURLを自動生成する。
+ */
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+export async function getStaticPaths() {
+    const allDocs = await getCollection("docs");
+
+    // 全タグを収集してユニーク化
+    const allTags = [...new Set(allDocs.flatMap((doc) => doc.data.tags))];
+
+    return allTags.map((tag) => ({
+        params: { tag },
+        props: {
+            tag,
+            posts: allDocs
+                .filter((doc) => doc.data.tags.includes(tag))
+                .filter((doc) => import.meta.env.DEV || !doc.data.draft)
+                .sort((a, b) => {
+                    const dateA = new Date(
+                        a.data.updated_at ?? a.data.created_at,
+                    );
+                    const dateB = new Date(
+                        b.data.updated_at ?? b.data.created_at,
+                    );
+                    return dateB.getTime() - dateA.getTime();
+                }),
+        },
+    }));
+}
+
+interface Props {
+    tag: string;
+    posts: Awaited<ReturnType<typeof getCollection<"docs">>>;
+}
+
+const { tag, posts } = Astro.props;
+
+// タグ名を表示用に整形
+const tagLabel = tag.charAt(0).toUpperCase() + tag.slice(1);
+---
+
+<BaseLayout
+    title={`${tagLabel} | TECH☆TECH`}
+    description={`TECH☆TECH ${tagLabel}一覧`}
+>
+    <Header />
+    <main>
+        <section class="page-header">
+            <h1>{tagLabel}</h1>
+        </section>
+
+        <div class="post-list">
+            {
+                posts.length > 0 ? (
+                    <ul>
+                        {posts.map((post) => (
+                            <li>
+                                <article class="post-card">
+                                    {post.data.cover && (
+                                        <div class="post-cover">
+                                            <Image
+                                                src={post.data.cover}
+                                                alt={post.data.title}
+                                                width={300}
+                                                height={200}
+                                                format="webp"
+                                            />
+                                        </div>
+                                    )}
+                                    <div class="post-content">
+                                        <h2>
+                                            <a
+                                                href={`/${post.slug}`}
+                                                class="stretched-link"
+                                            >
+                                                {post.data.title}
+                                            </a>
+                                        </h2>
+                                        <div class="meta">
+                                            {post.data.created_at && (
+                                                <span class="date">
+                                                    {new Date(
+                                                        post.data.created_at,
+                                                    ).toLocaleDateString(
+                                                        "ja-JP",
+                                                    )}
+                                                </span>
+                                            )}
+                                            {post.data.tags.length > 0 && (
+                                                <span class="tags">
+                                                    {post.data.tags.map((t) =>
+                                                        t.toLowerCase() ===
+                                                        tag.toLowerCase() ? (
+                                                            <span class="tag-link active">
+                                                                #{t}
+                                                            </span>
+                                                        ) : (
+                                                            <a
+                                                                class="tag-link"
+                                                                href={`/${t}`}
+                                                            >
+                                                                #{t}
+                                                            </a>
+                                                        ),
+                                                    )}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {post.data.description && (
+                                            <p class="description">
+                                                {post.data.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                </article>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>まだ記事ができてないようです...</p>
+                )
+            }
+        </div>
+    </main>
+    <Footer />
+</BaseLayout>
+
+<style>
+    main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    .page-header {
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    .page-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.25rem;
+    }
+    .post-list ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .post-card {
+        position: relative;
+        display: flex;
+        gap: 1.5rem;
+        border: 1px solid var(--color-border, #ddd);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--color-bg-card, #fff);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition:
+            box-shadow var(--transition-fast) var(--ease-standard),
+            background-color var(--transition-slow) var(--ease-standard),
+            border-color var(--transition-slow) var(--ease-standard);
+    }
+    .post-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background: var(--color-bg-card-hover, rgba(0, 0, 0, 0.02));
+    }
+    .stretched-link::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+    }
+    .post-cover {
+        width: 240px;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .post-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform var(--transition-normal) var(--ease-standard);
+    }
+    .post-card:hover .post-cover img {
+        transform: scale(1.05);
+    }
+    .post-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .post-content h2 {
+        margin: 0 0 0.8rem;
+        font-size: 1.5rem;
+        color: var(--color-text);
+        line-height: 1.3;
+        transition: color var(--transition-slow) var(--ease-standard);
+    }
+    .meta {
+        font-size: 0.9rem;
+        color: var(--color-muted, #666);
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        transition: color var(--transition-slow) var(--ease-standard);
+    }
+    .tags {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+    .tag-link {
+        color: var(--color-primary, #0070f3);
+        text-decoration: none;
+        transition: opacity var(--transition-fast) var(--ease-standard);
+        font-size: 0.9rem;
+    }
+    .tag-link:not(.active):hover {
+        opacity: 0.7;
+        text-decoration: underline;
+    }
+    .tag-link.active {
+        font-weight: 400;
+        pointer-events: auto;
+        cursor: default;
+        color: var(--color-muted, #888) !important;
+        opacity: 0.8;
+    }
+    .description {
+        margin: 0;
+        color: var(--color-text);
+        opacity: 0.8;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        transition: color var(--transition-slow) var(--ease-standard);
+    }
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    @media (max-width: 650px) {
+        .post-card {
+            flex-direction: column;
+        }
+        .post-cover {
+            width: 100%;
+            height: 180px;
+        }
+        .post-content {
+            padding: 1rem;
+        }
+        .post-content h2 {
+            font-size: 1.3rem;
+        }
+    }
+</style>

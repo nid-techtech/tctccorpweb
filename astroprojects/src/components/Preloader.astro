@@ -1,0 +1,145 @@
+---
+// Preloader.astro
+// 初回アクセス時のみ表示され、フォントのロード時間を稼ぎつつワクワク感を演出します。
+---
+
+<script is:inline>
+    // ページロード時に即座に実行され、チラつきを防ぎます
+    if (sessionStorage.getItem("visited_techtech")) {
+        // 訪問済みの場合は変数をnoneに設定して非表示
+        document.documentElement.style.setProperty(
+            "--preloader-display",
+            "none",
+        );
+        // 既に訪問済みなら即座にアニメーションを許可
+        document.documentElement.classList.add("is-loaded");
+    } else {
+        // 初回訪問時
+        sessionStorage.setItem("visited_techtech", "true");
+        document.documentElement.style.setProperty(
+            "--preloader-display",
+            "flex",
+        );
+    }
+</script>
+
+<div id="preloader" class="preloader">
+    <div class="preloader-content">
+        <span class="logo-text">Loading…</span>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .preloader {
+        /* インラインスクリプトによって制御される表示状態。デフォルトはflex */
+        display: var(--preloader-display, flex);
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--color-bg);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        visibility: visible;
+        transition:
+            opacity 0.6s var(--ease-standard),
+            visibility 0.6s var(--ease-standard);
+    }
+
+    .preloader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .preloader-content {
+        position: relative; /* 子要素の絶対配置基準点だが、バーは画面幅いっぱいにしたい場合があるため調整 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .logo-text {
+        font-family: var(--font-heading, sans-serif);
+        font-size: 3rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        color: var(--color-text);
+        opacity: 0;
+        /* 少し長めに表示させる */
+        animation: preloaderIntro 1.5s var(--ease-out) forwards;
+        margin-bottom: 2rem; /* バーとの間隔 */
+    }
+
+    /* シークバー全幅（画面幅いっぱい）用コンテナ */
+    .loading-bar-container {
+        position: absolute;
+        top: calc(50% + 0.1rem); /* 画面中央横切り */
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--color-border);
+        transform: translateY(-50%); /* コンテナ自身の精密な中央合わせ */
+        z-index: -1; /* ロゴの後ろを行き交うように */
+    }
+
+    .loading-bar {
+        height: 100%;
+        background-color: var(--color-primary); /* プライマリカラーで埋める */
+        width: 0%;
+        /* 左から右へシークするアニメーション（1.5s） */
+        animation: loadingSeek 1.5s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    }
+
+    @keyframes loadingSeek {
+        0% {
+            width: 0%;
+        }
+        50% {
+            width: 70%; /* 一瞬早めに伸びて */
+        }
+        100% {
+            width: 100%; /* ゆっくり最後が埋まる */
+        }
+    }
+
+    @keyframes preloaderIntro {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    // モジュールスクリプト：DOM読み込み後に実行され、アニメーション後にプレローダーを消す
+    document.addEventListener("DOMContentLoaded", () => {
+        const preloader = document.getElementById("preloader");
+
+        // inline styleでdisplay: noneになっていない場合（＝初回表示時）にのみ後処理を行う
+        if (preloader && getComputedStyle(preloader).display !== "none") {
+            // シークバー終了（1.5秒）を待って少し余韻を残しフェードアウト
+            setTimeout(() => {
+                preloader.classList.add("fade-out");
+                // プレローダーが消え始めたタイミングでコンテンツの表示を開始
+                document.documentElement.classList.add("is-loaded");
+            }, 1600);
+
+            // フェードアウト後、DOMから表示を消す（クリックの妨げを完全排除）
+            setTimeout(() => {
+                preloader.style.display = "none";
+            }, 2200);
+        }
+    });
+</script>

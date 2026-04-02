@@ -1,53 +1,156 @@
 ---
-import { getEntry } from "astro:content";
-import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
+import Preloader from "../components/Preloader.astro";
 import P5Intaraction from "../components/P5Intaraction.astro";
-import RecentPosts from "../components/RecentPosts.astro";
 
-// Fetch specific entry for home (e.g., 'index' or 'home')
-let entry;
-try {
-    entry = await getEntry("docs", "index");
-} catch (e) {
-    console.error("Home entry not found");
-}
-// If not found, show default
-const Content = entry ? (await entry.render()).Content : null;
+const title = "TECH☆TECH";
+const description =
+    "A collective of developers and creators pushing the boundaries of technology and design.";
 ---
 
-<BaseLayout title={entry?.data.title || "Home"}>
+<BaseLayout title={title} description={description}>
+    <Preloader />
     <Header />
-    <P5Intaraction />
-    <main>
-        {
-            entry && Content ? (
-                <article class="prose">
-                    <h1>{entry.data.title}</h1>
-                    <Content />
-                </article>
-            ) : (
-                <div>
-                    <h1>Welcome to TECH☆TECH</h1>
-                    <p>Content is loading or missing.</p>
-                </div>
-            )
-        }
-
-        <RecentPosts count={5} />
-    </main>
-    <Footer />
+    <div class="hero-container">
+        <P5Intaraction class="p5-top" config={{ qty: 12, isVisible: true }} />
+        <section class="top">
+            <h1 class="hero-title">
+                <span class="reveal-text"><span>To Be</span></span><br />
+                <span class="reveal-text stagger-1"
+                    ><span>Constellations</span></span
+                ><br />
+                <span class="reveal-text stagger-2"><span>With you.</span></span
+                >
+            </h1>
+            <p class="hero-description reveal-text stagger-2">
+                <span>長岡造形大学 先端メディア表現サークル TECH☆TECH</span>
+            </p>
+            <div class="hero-links reveal-text stagger-3">
+                <a href="/all" class="hero-link">Recent articles</a>
+                <a href="/all" class="hero-link">Topics</a>
+            </div>
+        </section>
+        <div class="copyright reveal-text stagger-3">
+            &copy; TECH☆TECH 2021-2026
+        </div>
+    </div>
 </BaseLayout>
 
 <style>
-    main {
-        max-width: 1080px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
+    :global(html, body) {
+        overflow: hidden;
+        height: 100vh;
+        margin: 0;
+        scrollbar-gutter: auto !important;
     }
-    .prose {
-        line-height: 1.6;
+
+    :global(body) {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hero-container {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    .p5-top {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .p5-top {
+            width: 100%;
+            top: 15vh;
+        }
+    }
+
+    .top {
+        position: absolute;
+        top: 5vw;
+        left: 8vw;
+        z-index: 10;
+        pointer-events: none;
+        color: #000000;
+    }
+
+    .hero-links {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        pointer-events: auto;
+    }
+
+    .hero-link {
+        font-family: var(--font-heading);
+        font-size: clamp(1rem, 2vw, 1.5rem);
+        font-weight: 400;
+        color: var(--color-text);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+        width: fit-content;
+        transition: color var(--transition-slow) var(--ease-standard);
+    }
+
+    .hero-link:hover {
+        color: var(--color-primary);
+    }
+
+    .copyright {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        font-family: var(--font-base);
+        font-size: clamp(0.7rem, 2vw, 0.9rem);
+        color: var(--color-text);
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 10vh, 10vw);
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    h2 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        font-weight: 400;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .content {
+        animation: fadeIn 1s var(--ease-standard) 0.4s forwards;
+        opacity: 0;
+    }
+
+    .hero-description {
+        font-size: clamp(1rem, 2vw, 1.5rem);
+        margin: 1rem 0 0;
+        color: var(--color-text);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
