@@ -13,7 +13,7 @@ import Footer from "../../components/Footer.astro";
 const allDocs = await getCollection("docs");
 const posts = allDocs
     .filter((doc) => doc.slug !== "index")
-    .filter((doc) => import.meta.env.DEV || !doc.data.draft)
+    .filter((doc) => !doc.data.draft)
     .sort((a, b) => {
         const dateA = new Date(a.data.updated_at ?? a.data.created_at);
         const dateB = new Date(b.data.updated_at ?? b.data.created_at);
@@ -78,12 +78,7 @@ const posts = allDocs
                                                     ))}
                                                 </span>
                                             )}
-                                            {import.meta.env.DEV &&
-                                                post.data.draft && (
-                                                    <span class="draft-badge">
-                                                        DRAFT
-                                                    </span>
-                                                )}
+
                                         </div>
                                         {post.data.description && (
                                             <p class="description">

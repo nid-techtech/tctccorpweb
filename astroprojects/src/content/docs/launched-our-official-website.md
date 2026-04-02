@@ -2,7 +2,7 @@
 
 title: "公式Webサイトの運用を始めました"
 created_at: "2026-04-03"
-draft: true
+draft: false
 
 subtitle: "We have launched our official website"
 description: "GitHubは便利だねぇ"
