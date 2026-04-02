@@ -6,7 +6,8 @@ import P5Intaraction from "../components/P5Intaraction.astro";
 import { getCollection } from "astro:content";
 
 const allDocs = await getCollection("docs");
-const allUrls = allDocs.map((doc) => `/${doc.slug}/`);
+const activeDocs = allDocs.filter((doc) => doc.slug !== "index" && !doc.data.draft);
+const allUrls = activeDocs.map((doc) => `/${doc.slug}/`);
 allUrls.push("/");
 
 const title = "404: Not Found";

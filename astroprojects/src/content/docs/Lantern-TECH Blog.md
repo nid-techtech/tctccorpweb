@@ -4,8 +4,8 @@ title: "Lantern-TECH Blog"
 created_at: "2026-02-15"
 draft: false
 
-subtitle: "VibeCodingにより超高速でサイト作成"
-description: ""
+subtitle: ""
+description: "VibeCodingにより超高速でサイト作成"
 updated_at: "2026-04-03"
 cover: "https://i.imgur.com/mWCPhIk.png"
 tags: ["blog","works","web","astro","vivecoding"]

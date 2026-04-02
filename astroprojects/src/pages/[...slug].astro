@@ -10,7 +10,7 @@ export async function getStaticPaths() {
     const blogEntries = await getCollection("docs");
     return blogEntries
         .filter((entry) => entry.slug !== "index")
-        .filter((entry) => import.meta.env.DEV || !entry.data.draft) // Hide drafts in production
+        .filter((entry) => !entry.data.draft) // Hide drafts
         .map((entry) => ({
             params: { slug: entry.slug },
             props: { entry },

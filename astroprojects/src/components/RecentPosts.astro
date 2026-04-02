@@ -12,7 +12,7 @@ const allDocs = await getCollection("docs");
 const sortedDocs = allDocs
   .filter((doc) => !filterTag || doc.data.tags.includes(filterTag))
   .filter((doc) => doc.slug !== "index") // Exclude home page itself
-  .filter((doc) => import.meta.env.DEV || !doc.data.draft) // Filter out drafts
+  .filter((doc) => !doc.data.draft) // Filter out drafts
   .sort((a, b) => {
     const dateA = new Date(a.data.updated_at ?? a.data.created_at);
     const dateB = new Date(b.data.updated_at ?? b.data.created_at);
