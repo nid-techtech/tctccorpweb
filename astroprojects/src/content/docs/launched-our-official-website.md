@@ -8,7 +8,7 @@ subtitle: "We have launched our official website"
 description: "GitHubは便利だねぇ"
 updated_at: "2026-04-03"
 cover: "https://imgur.com/U74XCeD.png"
-tags: ["blog","web","p5.js","astro"]
+tags: ["blog","web","p5js","astro"]
 author: "大渕凜"
 
 ---
