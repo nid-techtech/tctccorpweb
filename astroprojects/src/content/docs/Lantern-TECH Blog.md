@@ -197,7 +197,7 @@ Astro移行後は、GitHubからローカルに`git clone`したリポジトリ�
 
 ## その他の変化
 Google Sitesではフォントや画面レイアウトなど、Googleが定めた範囲でしかカスタマイズできませんでした。  
-今回、メインフォントにLINE Seed JP、モノスペースフォントにFiraCode、簡体字フォントにNoto Sans CJK SCを使い、要素によって適宜切り替えるようにしています。
+今回、メインフォントにLINE Seed JP、モノスペースフォントにJetBrains Mono、簡体字フォントにNoto Sans CJK SCを使い、要素によって適宜切り替えるようにしています。
 より自然な文章表示になりました。  
 
 また、Google Sitesで作ったサイトに独自ドメインを設定できなかったのが、今回`nid-techtech.com`ドメインで公開できるようになったのもポイントです。  
