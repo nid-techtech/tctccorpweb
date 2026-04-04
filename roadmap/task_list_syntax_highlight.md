@@ -27,6 +27,12 @@
   - ライトモード（デフォルト）：`--shiki-light` / `--shiki-light-bg`
   - ダークモード：`@media (prefers-color-scheme: dark)` 内で `--shiki-dark` / `--shiki-dark-bg`
 - [x] `font-style`、`font-weight`、`text-decoration` のCSS変数も適用（斜体・太字・取り消し線などのトークン装飾対応）
+- [x] **行番号の追加**（CSSカウンター方式）
+  - `.prose pre` に `counter-reset: line-number` を設定
+  - `.prose pre code .line` に `counter-increment: line-number` を設定
+  - `::before` 疑似要素に `content: counter(line-number)` で行番号表示
+  - `user-select: none` で行番号をコピー対象から除外
+  - ライト/ダーク両モードで適切なグレー色を使用
 
 ## 変更ファイル
 - `astroprojects/astro.config.mjs`

@@ -212,13 +212,16 @@ a:hover {
 /* Shikiが生成する pre 要素のベーススタイル */
 .prose pre {
     border-radius: 8px;
-    padding: 1.25rem 1.5rem;
+    /* 左側に行番号ガター分のスペースを確保 */
+    padding: 1.25rem 1.5rem 1.25rem 0;
     overflow-x: auto;
     font-size: 0.9em;
     line-height: 1.7;
     margin: 1.5rem 0;
     border: 1px solid var(--color-border);
     transition: border-color var(--transition-slow) var(--ease-standard);
+    /* CSSカウンターをリセット：行番号の起点 */
+    counter-reset: line-number;
 }
 
 /* Shiki デュアルテーマ：ライトモード（デフォルト） */
@@ -251,6 +254,43 @@ a:hover {
         text-decoration: var(--shiki-dark-text-decoration, inherit);
     }
 }
+
+/* ==== 行番号（CSSカウンター方式） ==== */
+/* Shiki はすべての行を <span class="line"> でラップして出力する */
+/* Why CSSカウンター: 追加パッケージ不要、JS不要、ビルド後の静的HTMLに依存しない */
+.prose pre code {
+    display: block; /* コード全体をブロック化してflexboxコンテナにする */
+}
+
+.prose pre code .line {
+    display: inline-block; /* flex より inline-block が横スクロール時に安定 */
+    width: 100%;
+    counter-increment: line-number;
+    padding-left: 1rem; /* テキスト本文の左パディング */
+}
+
+/* 行番号を ::before で描画する */
+.prose pre code .line::before {
+    content: counter(line-number);
+    display: inline-block;
+    width: 2.5rem;
+    margin-left: -1rem; /* code の padding-left を打ち消し、ガター内に収める */
+    margin-right: 1.25rem;
+    text-align: right;
+    /* ライトモードの行番号色 */
+    color: #aaa;
+    user-select: none; /* 行番号をコピー対象から除外 */
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .prose pre code .line::before {
+        /* ダークモードの行番号色 */
+        color: #555;
+    }
+}
+
 
 /* 目次クリック時にヘッダーで隠れないようオフセット */
 .prose h1,
