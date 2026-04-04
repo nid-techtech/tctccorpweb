@@ -222,14 +222,22 @@ a:hover {
     transition: border-color var(--transition-slow) var(--ease-standard);
     /* CSSカウンターをリセット：行番号の起点 */
     counter-reset: line-number;
+    /*
+     * Why !important:
+     * Shiki はインラインスタイルで background-color:#ffffff を設定する。
+     * インラインスタイルは class セレクターより強く、通常の CSS では上書き不可。
+     * 横スクロール時も <pre> の背景色でスクロール領域全体を均一に覆うため、
+     * !important で Shiki のインラインスタイルを意図的に上書きする。
+     */
+    background-color: var(--color-code-bg) !important;
+    color: var(--shiki-light, inherit);
 }
 
-/* Shiki デュアルテーマ：ライトモード（デフォルト） */
-/* Shiki が各トークンに出力する CSS 変数 --shiki-light / --shiki-dark を参照する */
-.prose pre,
+/* <code> は transparent にして <pre> の背景色をそのまま见せる。
+ * これにより横スクロール時も <pre> の色が一貫して適用される。 */
 .prose pre code {
     color: var(--shiki-light, inherit);
-    background-color: var(--shiki-light-bg, var(--color-code-bg));
+    background-color: transparent;
 }
 
 .prose pre span {
@@ -241,10 +249,14 @@ a:hover {
 
 /* Shiki デュアルテーマ：ダークモード */
 @media (prefers-color-scheme: dark) {
-    .prose pre,
+    .prose pre {
+        background-color: #0d1117 !important; /* github-dark 背景色で統一 */
+        color: var(--shiki-dark, inherit);
+    }
+
     .prose pre code {
         color: var(--shiki-dark, inherit);
-        background-color: var(--shiki-dark-bg, #0d1117);
+        background-color: transparent;
     }
 
     .prose pre span {
