@@ -23,6 +23,24 @@ export default defineConfig({
       },
       // 言語が指定されていない場合はハイライトしない
       wrap: false,
+      transformers: [
+        {
+          name: 'code-filename-badge',
+          // remark-strip-code-lang-meta が node.meta にファイル名を格納している。
+          // Shiki はそれを this.options.meta.__raw として受け取る。
+          // ファイル名がある場合のみ <span class="code-filename"> を <pre> 先頭に挿入する。
+          pre(node) {
+            const filename = this.options.meta?.__raw?.trim();
+            if (!filename) return;
+            node.children.unshift({
+              type: 'element',
+              tagName: 'span',
+              properties: { class: ['code-filename'] },
+              children: [{ type: 'text', value: filename }],
+            });
+          },
+        },
+      ],
     },
   },
   integrations: [mdx()]

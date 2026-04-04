@@ -304,6 +304,40 @@ a:hover {
 }
 
 
+/* ==== コードブロック：ファイル名バッジ ==== */
+/*
+ * Shiki transformer により <pre> の先頭に <span class="code-filename"> が挿入される。
+ * Why sticky: overflow-x:auto の pre 内で横スクロールしてもバッジが左端に残る。
+ */
+.prose pre > .code-filename {
+    display: block;
+    position: sticky;
+    left: 0;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 0.6rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-family: var(--font-code);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+    /* ライトモード */
+    background-color: #d0d3d9;
+    color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+    .prose pre > .code-filename {
+        background-color: #1e2432;
+        color: #8b949e;
+    }
+}
+
 /* 目次クリック時にヘッダーで隠れないようオフセット */
 .prose h1,
 .prose h2,
