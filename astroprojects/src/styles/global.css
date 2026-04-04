@@ -208,6 +208,136 @@ a:hover {
     padding: 0;
 }
 
+/* ==== Shiki シンタックスハイライト ==== */
+/* Shikiが生成する pre 要素のベーススタイル */
+.prose pre {
+    border-radius: 8px;
+    /* 左側に行番号ガター分のスペースを確保 */
+    padding: 1.25rem 1.5rem 1.25rem 0;
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.7;
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border);
+    transition: border-color var(--transition-slow) var(--ease-standard);
+    /* CSSカウンターをリセット：行番号の起点 */
+    counter-reset: line-number;
+    /*
+     * Why !important:
+     * Shiki はインラインスタイルで background-color:#ffffff を設定する。
+     * インラインスタイルは class セレクターより強く、通常の CSS では上書き不可。
+     * 横スクロール時も <pre> の背景色でスクロール領域全体を均一に覆うため、
+     * !important で Shiki のインラインスタイルを意図的に上書きする。
+     */
+    background-color: var(--color-code-bg) !important;
+    color: var(--shiki-light, inherit);
+}
+
+/* <code> は transparent にして <pre> の背景色をそのまま见せる。
+ * これにより横スクロール時も <pre> の色が一貫して適用される。 */
+.prose pre code {
+    color: var(--shiki-light, inherit);
+    background-color: transparent;
+}
+
+.prose pre span {
+    color: var(--shiki-light, inherit);
+    font-style: var(--shiki-light-font-style, inherit);
+    font-weight: var(--shiki-light-font-weight, inherit);
+    text-decoration: var(--shiki-light-text-decoration, inherit);
+}
+
+/* Shiki デュアルテーマ：ダークモード */
+@media (prefers-color-scheme: dark) {
+    .prose pre {
+        background-color: #0d1117 !important; /* github-dark 背景色で統一 */
+        color: var(--shiki-dark, inherit);
+    }
+
+    .prose pre code {
+        color: var(--shiki-dark, inherit);
+        background-color: transparent;
+    }
+
+    .prose pre span {
+        color: var(--shiki-dark, inherit);
+        font-style: var(--shiki-dark-font-style, inherit);
+        font-weight: var(--shiki-dark-font-weight, inherit);
+        text-decoration: var(--shiki-dark-text-decoration, inherit);
+    }
+}
+
+/* ==== 行番号（CSSカウンター方式） ==== */
+/* Shiki はすべての行を <span class="line"> でラップして出力する */
+/* Why CSSカウンター: 追加パッケージ不要、JS不要、ビルド後の静的HTMLに依存しない */
+.prose pre code {
+    display: block; /* コード全体をブロック化してflexboxコンテナにする */
+}
+
+.prose pre code .line {
+    display: inline-block; /* flex より inline-block が横スクロール時に安定 */
+    width: 100%;
+    counter-increment: line-number;
+    padding-left: 1rem; /* テキスト本文の左パディング */
+}
+
+/* 行番号を ::before で描画する */
+.prose pre code .line::before {
+    content: counter(line-number);
+    display: inline-block;
+    width: 2.5rem;
+    margin-left: -1rem; /* code の padding-left を打ち消し、ガター内に収める */
+    margin-right: 1.25rem;
+    text-align: right;
+    /* ライトモードの行番号色 */
+    color: #aaa;
+    user-select: none; /* 行番号をコピー対象から除外 */
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .prose pre code .line::before {
+        /* ダークモードの行番号色 */
+        color: #555;
+    }
+}
+
+
+/* ==== コードブロック：ファイル名バッジ ==== */
+/*
+ * Shiki transformer により <pre> の先頭に <span class="code-filename"> が挿入される。
+ * Why sticky: overflow-x:auto の pre 内で横スクロールしてもバッジが左端に残る。
+ */
+.prose pre > .code-filename {
+    display: block;
+    position: sticky;
+    left: 0;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 0.6rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-family: var(--font-code);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+    /* ライトモード */
+    background-color: #d0d3d9;
+    color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+    .prose pre > .code-filename {
+        background-color: #1e2432;
+        color: #8b949e;
+    }
+}
+
 /* 目次クリック時にヘッダーで隠れないようオフセット */
 .prose h1,
 .prose h2,
