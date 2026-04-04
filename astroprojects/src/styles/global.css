@@ -208,6 +208,50 @@ a:hover {
     padding: 0;
 }
 
+/* ==== Shiki シンタックスハイライト ==== */
+/* Shikiが生成する pre 要素のベーススタイル */
+.prose pre {
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.7;
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border);
+    transition: border-color var(--transition-slow) var(--ease-standard);
+}
+
+/* Shiki デュアルテーマ：ライトモード（デフォルト） */
+/* Shiki が各トークンに出力する CSS 変数 --shiki-light / --shiki-dark を参照する */
+.prose pre,
+.prose pre code {
+    color: var(--shiki-light, inherit);
+    background-color: var(--shiki-light-bg, var(--color-code-bg));
+}
+
+.prose pre span {
+    color: var(--shiki-light, inherit);
+    font-style: var(--shiki-light-font-style, inherit);
+    font-weight: var(--shiki-light-font-weight, inherit);
+    text-decoration: var(--shiki-light-text-decoration, inherit);
+}
+
+/* Shiki デュアルテーマ：ダークモード */
+@media (prefers-color-scheme: dark) {
+    .prose pre,
+    .prose pre code {
+        color: var(--shiki-dark, inherit);
+        background-color: var(--shiki-dark-bg, #0d1117);
+    }
+
+    .prose pre span {
+        color: var(--shiki-dark, inherit);
+        font-style: var(--shiki-dark-font-style, inherit);
+        font-weight: var(--shiki-dark-font-weight, inherit);
+        text-decoration: var(--shiki-dark-text-decoration, inherit);
+    }
+}
+
 /* 目次クリック時にヘッダーで隠れないようオフセット */
 .prose h1,
 .prose h2,
