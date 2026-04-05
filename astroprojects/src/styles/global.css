@@ -184,8 +184,11 @@ a:hover {
 }
 
 /* Markdown Content Elements (.prose) */
+/* width: 100% にすることで、低解像度GIFも含むすべての画像をコンテンツ幅いっぱいに表示する。
+ * max-width: 100% では画像が実際のピクセルサイズを超えて拡大されないため、
+ * 低解像度GIFが高解像度画像と比べて小さく表示される問題が起きていた。 */
 .prose img {
-    max-width: 100%;
+    width: 100%;
     height: auto;
 }
 
