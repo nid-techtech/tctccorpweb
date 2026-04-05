@@ -8,7 +8,7 @@ subtitle: "Thank you for coming to welcome26"
 description: "来週からもお待ちしています"
 updated_at: "2026-04-06"
 cover: "https://imgur.com/b3Xfcag.jpeg"
-tags: ["blog","public","institute"]
+tags: ["blog","public","institute","exhibition"]
 author: "大渕凜"
 
 ---
@@ -67,7 +67,7 @@ tctcの真骨頂は**身にならないようなテック雑談をだらだら�
 
 ![Trace Attribute 準備中](https://imgur.com/gm5JyAT.jpeg)
 
-![Trace Attribute 準備中2](https://imgur.com/d2xwWFM)
+![Trace Attribute 準備中2](https://imgur.com/d2xwWFM.jpeg)
 
 ![Trace Attribute](https://i.imgur.com/OFxZfMq.gif)
 
