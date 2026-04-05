@@ -62,10 +62,12 @@ tctcの真骨頂は**身にならないようなテック雑談をだらだら�
 ### Trace Attribute
 
 生方さんが制作した、ペンプロッターとp5.jsを組み合わせたKineticArt作品。  
-なお彼は当日、マーカーペン用ホルダーを忘れてくるという失態を犯したため、映像に合わせて機械が動作するのみの実演になりました。
+なお彼は当日、マーカーペン用ホルダーを忘れてきてしまったため、映像に合わせて機械が動作するのみの実演になりました。
 （ペンで描画する機能はなし）  
 
-![Trace Attribute 準備中](https://imgur.com/fswwxpR.jpeg)
+![Trace Attribute 準備中](https://imgur.com/gm5JyAT.jpeg)
+
+![Trace Attribute 準備中2](https://imgur.com/d2xwWFM)
 
 ![Trace Attribute](https://i.imgur.com/OFxZfMq.gif)
 
