@@ -51,41 +51,35 @@ const posts = allDocs
                                     )}
                                     <div class="post-content">
                                         <h2>
-                                            <a
-                                                href={`/${post.slug}`}
-                                                class="stretched-link"
-                                            >
+                                            <a href={`/${post.slug}`} class="stretched-link">
                                                 {post.data.title}
                                             </a>
                                         </h2>
                                         <div class="meta">
-                                            {post.data.created_at && (
-                                                <span class="date">
-                                                    {new Date(
-                                                        post.data.created_at,
-                                                    ).toLocaleDateString(
-                                                        "ja-JP",
-                                                    )}
-                                                </span>
-                                            )}
-                                            {post.data.tags.length > 0 && (
-                                                <span class="tags">
-                                                    {post.data.tags.map((t) => (
-                                                        <a
-                                                            class="tag-link"
-                                                            href={`/${t}`}
-                                                        >
-                                                            #{t}
-                                                        </a>
-                                                    ))}
-                                                </span>
-                                            )}
-
+                                            <span class="author-date">
+                                                by {post.data.author || "TECH☆TECH"} on {post.data.created_at ? new Date(post.data.created_at).toLocaleDateString("ja-JP") : ""}
+                                            </span>
+                                            <span class="separator">|</span>
+                                            <span class="char-count">
+                                                {post.body ? post.body.length : 0} 文字
+                                            </span>
                                         </div>
                                         {post.data.description && (
                                             <p class="description">
                                                 {post.data.description}
                                             </p>
+                                        )}
+                                        {post.data.tags && post.data.tags.length > 0 && (
+                                            <div class="tags">
+                                                {((tags) => {
+                                                    const categories = ['blog', 'works', 'info'];
+                                                    const catTags = tags.filter((t) => categories.includes(t));
+                                                    const elemTags = tags.filter((t) => !categories.includes(t));
+                                                    return [...catTags, ...elemTags].map((t) => (
+                                                        <a class="tag-link" href={`/${t}`}>#{t}</a>
+                                                    ));
+                                                })(post.data.tags || [])}
+                                            </div>
                                         )}
                                     </div>
                                 </article>
@@ -173,9 +167,10 @@ const posts = allDocs
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+        gap: 0.5rem;
     }
     .post-content h2 {
-        margin: 0 0 1rem;
+        margin: 0;
         font-size: 1.35rem;
         font-weight: 600;
         color: var(--color-text);
@@ -184,16 +179,30 @@ const posts = allDocs
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        min-height: 2.8em;
         transition: color var(--transition-slow) var(--ease-standard);
     }
     .meta {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         color: var(--color-muted, #777);
-        margin-top: auto;
         display: flex;
         align-items: center;
         gap: 0.5rem;
         flex-wrap: wrap;
+        transition: color var(--transition-slow) var(--ease-standard);
+    }
+    .separator {
+        opacity: 0.5;
+    }
+    .description {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--color-text);
+        opacity: 0.8;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
         transition: color var(--transition-slow) var(--ease-standard);
     }
     .tags {
@@ -202,13 +211,13 @@ const posts = allDocs
         display: inline-flex;
         gap: 0.4rem;
         flex-wrap: wrap;
-        margin-left: 0.5rem;
+        margin-top: auto;
     }
     .tag-link {
         color: var(--color-primary, #0070f3);
         text-decoration: none;
         transition: opacity var(--transition-fast) var(--ease-standard);
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     .tag-link:hover {
         opacity: 0.7;
@@ -224,9 +233,6 @@ const posts = allDocs
         padding: 0.1rem 0.4rem;
         border-radius: 3px;
         letter-spacing: 0.05em;
-    }
-    .description {
-        display: none;
     }
     a {
         text-decoration: none;
