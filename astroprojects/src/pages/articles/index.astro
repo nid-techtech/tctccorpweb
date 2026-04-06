@@ -178,6 +178,7 @@ for (let y = 2026; y <= currentYear; y++) {
                         )
                     }
                 </div>
+                <div id="pagination-container" class="pagination-container"></div>
             </div>
 
             <aside class="filter-panel" id="filter-panel">
@@ -401,6 +402,42 @@ for (let y = 2026; y <= currentYear; y++) {
         font-size: 2.5rem;
         margin-bottom: 0.25rem;
     }
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 3rem;
+        flex-wrap: wrap;
+    }
+    :global(.page-btn) {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 0 0.5rem;
+        background: var(--color-bg-card, #f9f9f9);
+        border: 1px solid var(--color-border, #eaeaea);
+        border-radius: 4px;
+        color: var(--color-text, #333);
+        font-weight: bold;
+        cursor: pointer;
+        transition: all var(--transition-fast) var(--ease-standard);
+    }
+    :global(.page-btn:hover:not(:disabled)) {
+        background: var(--color-border, #eaeaea);
+    }
+    :global(.page-btn.is-active) {
+        background: var(--color-primary, #0070f3);
+        color: #fff;
+        border-color: var(--color-primary, #0070f3);
+        cursor: default;
+    }
+    :global(.page-btn:disabled) {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
     .post-list ul {
         list-style: none;
         padding: 0;
@@ -551,27 +588,95 @@ for (let y = 2026; y <= currentYear; y++) {
         const clearBtn = document.getElementById('clear-filters-btn') as HTMLButtonElement;
         const toggleBtn = document.getElementById('toggle-filter-btn') as HTMLButtonElement;
         const filterPanel = document.getElementById('filter-panel') as HTMLElement;
+        const paginationContainer = document.getElementById('pagination-container') as HTMLElement | null;
 
-        if (!yearSelect || !monthSelect || !clearBtn || !toggleBtn || !filterPanel) return;
+        if (!yearSelect || !monthSelect || !clearBtn || !toggleBtn || !filterPanel || !paginationContainer) return;
+
+        const ITEMS_PER_PAGE = 12;
+        let currentPage = 1;
 
         function getCheckedValues(type: string) {
             return Array.from(document.querySelectorAll(`input[data-type="${type}"]:checked`) as NodeListOf<HTMLInputElement>).map(cb => cb.value);
         }
 
-        function applyFilters() {
+        function restoreFiltersFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const pPage = params.get('page');
+            if (pPage) currentPage = parseInt(pPage, 10) || 1;
+            
+            filterCheckboxes.forEach(cb => {
+                const type = cb.getAttribute('data-type');
+                if (type) {
+                    const values = params.getAll(type); 
+                    cb.checked = values.includes(cb.value);
+                }
+            });
+            if (params.has('year')) yearSelect.value = params.get('year')!;
+            if (params.has('month')) monthSelect.value = params.get('month')!;
+        }
+
+        function updateURL(selectedCats: string[], selectedTags: string[], selectedAuthors: string[], year: string, month: string) {
+            const params = new URLSearchParams();
+            selectedCats.forEach(c => params.append('category', c));
+            selectedTags.forEach(t => params.append('tag', t));
+            selectedAuthors.forEach(a => params.append('author', a));
+            if (year) params.set('year', year);
+            if (month) params.set('month', month);
+            if (currentPage > 1) params.set('page', currentPage.toString());
+            
+            const paramStr = params.toString();
+            const newUrl = window.location.pathname + (paramStr ? '?' + paramStr : '');
+            if (window.location.search !== '?' + paramStr && !(window.location.search === '' && paramStr === '')) {
+                window.history.pushState({path: newUrl}, '', newUrl);
+            }
+        }
+
+        function renderPagination(totalItems: number) {
+            paginationContainer!.innerHTML = '';
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+            if (totalPages <= 1) return;
+
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const createBtn = (text: string | number, pageNum: number, disabled: boolean, active: boolean) => {
+                const btn = document.createElement('button');
+                btn.className = 'page-btn' + (active ? ' is-active' : '');
+                btn.textContent = String(text);
+                btn.disabled = disabled;
+                if (!disabled && !active) {
+                    btn.addEventListener('click', () => {
+                        currentPage = pageNum;
+                        applyFilters(false);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                }
+                return btn;
+            };
+
+            paginationContainer!.appendChild(createBtn('<', currentPage - 1, currentPage === 1, false));
+            for (let i = 1; i <= totalPages; i++) {
+                paginationContainer!.appendChild(createBtn(i, i, false, i === currentPage));
+            }
+            paginationContainer!.appendChild(createBtn('>', currentPage + 1, currentPage === totalPages, false));
+        }
+
+        function applyFilters(resetPage: boolean = true) {
+            if (resetPage) currentPage = 1;
+
             const selectedCats = getCheckedValues('category');
             const selectedTags = getCheckedValues('tag');
             const selectedAuthors = getCheckedValues('author');
             const selectedYear = yearSelect.value;
             const selectedMonth = monthSelect.value;
 
-            // Show/hide month select
             if (selectedYear === "") {
                 monthSelect.style.display = 'none';
                 monthSelect.value = "";
             } else {
                 monthSelect.style.display = 'block';
             }
+
+            const matchedCards: HTMLElement[] = [];
 
             postCards.forEach(card => {
                 const cats = (card.dataset.categories || '').split('|').filter(Boolean);
@@ -587,22 +692,40 @@ for (let y = 2026; y <= currentYear; y++) {
                 let matchMonth = selectedYear === "" || selectedMonth === "" || selectedMonth === month;
 
                 if (matchCat && matchTag && matchAuthor && matchYear && matchMonth) {
+                    matchedCards.push(card);
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const totalItems = matchedCards.length;
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+            if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+
+            matchedCards.forEach((card, index) => {
+                if (index >= startIndex && index < endIndex) {
                     card.style.display = '';
                 } else {
                     card.style.display = 'none';
                 }
             });
+
+            renderPagination(totalItems);
+            updateURL(selectedCats, selectedTags, selectedAuthors, selectedYear, selectedMonth);
         }
 
-        filterCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
-        yearSelect.addEventListener('change', applyFilters);
-        monthSelect.addEventListener('change', applyFilters);
+        filterCheckboxes.forEach(cb => cb.addEventListener('change', () => applyFilters(true)));
+        yearSelect.addEventListener('change', () => applyFilters(true));
+        monthSelect.addEventListener('change', () => applyFilters(true));
 
         clearBtn.addEventListener('click', () => {
             filterCheckboxes.forEach(cb => cb.checked = false);
             yearSelect.value = "";
             monthSelect.value = "";
-            applyFilters();
+            applyFilters(true);
         });
 
         toggleBtn.addEventListener('click', () => {
@@ -610,8 +733,13 @@ for (let y = 2026; y <= currentYear; y++) {
             const isActive = filterPanel.classList.contains('is-active');
             toggleBtn.style.background = isActive ? 'var(--color-border, #eaeaea)' : 'var(--color-bg-card, #f9f9f9)';
         });
+
+        window.addEventListener('popstate', () => {
+            restoreFiltersFromURL();
+            applyFilters(false);
+        });
         
-        // Initial setup
-        applyFilters();
+        restoreFiltersFromURL();
+        applyFilters(false);
     });
 </script>
