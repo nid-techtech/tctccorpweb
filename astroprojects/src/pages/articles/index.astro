@@ -183,7 +183,7 @@ for (let y = 2026; y <= currentYear; y++) {
 
             <aside class="filter-panel" id="filter-panel">
                 <div class="filter-header">
-                    <h3>フィルター</h3>
+                    <h3>絞り込んで検索</h3>
                 </div>
                 
                 <div class="filter-group">
@@ -192,7 +192,7 @@ for (let y = 2026; y <= currentYear; y++) {
                         {categories.map(cat => (
                             <label class="filter-pill">
                                 <input type="checkbox" value={cat} data-type="category" />
-                                <span>{cat}</span>
+                                <span>#{cat}</span>
                             </label>
                         ))}
                     </div>
@@ -200,14 +200,17 @@ for (let y = 2026; y <= currentYear; y++) {
 
                 <div class="filter-group">
                     <h4>タグ</h4>
-                    <div class="filter-options">
+                    <div class="filter-options tags-container" id="tags-container">
                         {sortedTags.map(tag => (
                             <label class="filter-pill">
                                 <input type="checkbox" value={tag} data-type="tag" />
-                                <span>{tag}</span>
+                                <span>#{tag}</span>
                             </label>
                         ))}
                     </div>
+                    {sortedTags.length > 8 && (
+                        <button id="toggle-tags-btn" class="toggle-tags-btn">全てのタグを表示 <span>▼</span></button>
+                    )}
                 </div>
 
                 <div class="filter-group">
@@ -223,7 +226,7 @@ for (let y = 2026; y <= currentYear; y++) {
                 </div>
 
                 <div class="filter-group">
-                    <h4>時間</h4>
+                    <h4>公開日</h4>
                     <div class="date-filters">
                         <select id="year-select" class="form-select">
                             <option value="">すべての年</option>
@@ -289,7 +292,9 @@ for (let y = 2026; y <= currentYear; y++) {
         border: 1px solid var(--color-border, #eaeaea);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         position: sticky;
-        top: 2rem;
+        top: 6rem;
+        max-height: calc(100vh - 7rem);
+        overflow-y: auto;
     }
     .filter-header h3 {
         margin-top: 0;
@@ -314,6 +319,27 @@ for (let y = 2026; y <= currentYear; y++) {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
+    }
+    .tags-container {
+        max-height: 135px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    .tags-container.is-expanded {
+        max-height: 2000px;
+    }
+    .toggle-tags-btn {
+        margin-top: 0.75rem;
+        background: none;
+        border: none;
+        color: var(--color-primary, #0070f3);
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 0;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
     }
     .filter-pill {
         display: inline-block;
@@ -733,6 +759,18 @@ for (let y = 2026; y <= currentYear; y++) {
             const isActive = filterPanel.classList.contains('is-active');
             toggleBtn.style.background = isActive ? 'var(--color-border, #eaeaea)' : 'var(--color-bg-card, #f9f9f9)';
         });
+
+        const toggleTagsBtn = document.getElementById('toggle-tags-btn');
+        const tagsContainer = document.getElementById('tags-container');
+        if (toggleTagsBtn && tagsContainer) {
+            toggleTagsBtn.addEventListener('click', () => {
+                tagsContainer.classList.toggle('is-expanded');
+                const isExpanded = tagsContainer.classList.contains('is-expanded');
+                toggleTagsBtn.innerHTML = isExpanded 
+                    ? '折りたたむ <span>▲</span>' 
+                    : '全てのタグを表示 <span>▼</span>';
+            });
+        }
 
         window.addEventListener('popstate', () => {
             restoreFiltersFromURL();
