@@ -1,6 +1,6 @@
 ---
 /**
- * 全コンテンツ一覧ページ (/all)
+ * 全コンテンツ一覧ページ (/articles)
  * draft: false のすべての記事をまとめて表示する。
  * カテゴリや形式で分けずに一覧できるため、管理・確認用途にも適している。
  */
@@ -23,11 +23,14 @@ const posts = allDocs
     });
 ---
 
-<BaseLayout title="ALL | TECH☆TECH" description="TECH☆TECHのすべての記事一覧">
+<BaseLayout
+    title="Articles | TECH☆TECH"
+    description="TECH☆TECHのすべての記事一覧"
+>
     <Header />
     <main>
         <section class="page-header">
-            <h1>All</h1>
+            <h1>Articles</h1>
             <p>すべての記事がここにあります</p>
         </section>
 
@@ -51,17 +54,33 @@ const posts = allDocs
                                     )}
                                     <div class="post-content">
                                         <h2>
-                                            <a href={`/${post.slug}`} class="stretched-link">
+                                            <a
+                                                href={`/${post.slug}`}
+                                                class="stretched-link"
+                                            >
                                                 {post.data.title}
                                             </a>
                                         </h2>
                                         <div class="meta">
                                             <span class="author-date">
-                                                by {post.data.author || "TECH☆TECH"} on {post.data.created_at ? new Date(post.data.created_at).toLocaleDateString("ja-JP") : ""}
+                                                by{" "}
+                                                {post.data.author ||
+                                                    "TECH☆TECH"}{" "}
+                                                on{" "}
+                                                {post.data.created_at
+                                                    ? new Date(
+                                                          post.data.created_at,
+                                                      ).toLocaleDateString(
+                                                          "ja-JP",
+                                                      )
+                                                    : ""}
                                             </span>
                                             <span class="separator">|</span>
                                             <span class="char-count">
-                                                {post.body ? post.body.length : 0} 文字
+                                                {post.body
+                                                    ? post.body.length
+                                                    : 0}{" "}
+                                                文字
                                             </span>
                                         </div>
                                         {post.data.description && (
@@ -69,18 +88,42 @@ const posts = allDocs
                                                 {post.data.description}
                                             </p>
                                         )}
-                                        {post.data.tags && post.data.tags.length > 0 && (
-                                            <div class="tags">
-                                                {((tags) => {
-                                                    const categories = ['blog', 'works', 'info'];
-                                                    const catTags = tags.filter((t) => categories.includes(t));
-                                                    const elemTags = tags.filter((t) => !categories.includes(t));
-                                                    return [...catTags, ...elemTags].map((t) => (
-                                                        <a class="tag-link" href={`/${t}`}>#{t}</a>
-                                                    ));
-                                                })(post.data.tags || [])}
-                                            </div>
-                                        )}
+                                        {post.data.tags &&
+                                            post.data.tags.length > 0 && (
+                                                <div class="tags">
+                                                    {((tags) => {
+                                                        const categories = [
+                                                            "blog",
+                                                            "works",
+                                                            "info",
+                                                        ];
+                                                        const catTags =
+                                                            tags.filter((t) =>
+                                                                categories.includes(
+                                                                    t,
+                                                                ),
+                                                            );
+                                                        const elemTags =
+                                                            tags.filter(
+                                                                (t) =>
+                                                                    !categories.includes(
+                                                                        t,
+                                                                    ),
+                                                            );
+                                                        return [
+                                                            ...catTags,
+                                                            ...elemTags,
+                                                        ].map((t) => (
+                                                            <a
+                                                                class="tag-link"
+                                                                href={`/${t}`}
+                                                            >
+                                                                #{t}
+                                                            </a>
+                                                        ));
+                                                    })(post.data.tags || [])}
+                                                </div>
+                                            )}
                                     </div>
                                 </article>
                             </li>
