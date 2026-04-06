@@ -21,6 +21,29 @@ const posts = allDocs
         const dateB = new Date(b.data.created_at);
         return dateB.getTime() - dateA.getTime();
     });
+
+const categories = ["blog", "works", "info"];
+const tagCount: Record<string, number> = {};
+const authorCount: Record<string, number> = {};
+posts.forEach((post) => {
+    const author = post.data.author || "TECH☆TECH";
+    authorCount[author] = (authorCount[author] || 0) + 1;
+    if (post.data.tags) {
+        post.data.tags.forEach((tag) => {
+            if (!categories.includes(tag)) {
+                tagCount[tag] = (tagCount[tag] || 0) + 1;
+            }
+        });
+    }
+});
+const sortedTags = Object.keys(tagCount).sort((a, b) => tagCount[b] - tagCount[a]);
+const sortedAuthors = Object.keys(authorCount).sort((a, b) => authorCount[b] - authorCount[a]);
+
+const currentYear = new Date().getFullYear();
+const years = [];
+for (let y = 2026; y <= currentYear; y++) {
+    years.push(y);
+}
 ---
 
 <BaseLayout
@@ -34,12 +57,33 @@ const posts = allDocs
             <p>すべての記事がここにあります</p>
         </section>
 
-        <div class="post-list">
-            {
-                posts.length > 0 ? (
-                    <ul>
-                        {posts.map((post) => (
-                            <li>
+        <div class="content-wrapper">
+            <div class="post-list-container">
+                <div class="mobile-filter-toggle">
+                    <button id="toggle-filter-btn" class="base-btn">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="filter-icon"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                        フィルター
+                    </button>
+                </div>
+                <div class="post-list" id="post-list">
+                    {
+                        posts.length > 0 ? (
+                            <ul>
+                                {posts.map((post) => {
+                                    const cats = post.data.tags?.filter((t) => categories.includes(t)) || [];
+                                    const tgs = post.data.tags?.filter((t) => !categories.includes(t)) || [];
+                                    const author = post.data.author || "TECH☆TECH";
+                                    const date = post.data.created_at ? new Date(post.data.created_at) : null;
+                                    const year = date ? date.getFullYear() : "";
+                                    const month = date ? date.getMonth() + 1 : "";
+                                    return (
+                                <li class="post-card-wrapper" 
+                                    data-categories={`|${cats.join('|')}|`}
+                                    data-tags={`|${tgs.join('|')}|`}
+                                    data-author={author}
+                                    data-year={year}
+                                    data-month={month}
+                                >
                                 <article class="post-card">
                                     {post.data.cover && (
                                         <div class="post-cover">
@@ -126,13 +170,75 @@ const posts = allDocs
                                             )}
                                     </div>
                                 </article>
-                            </li>
+                                </li>
+                                )})}
+                            </ul>
+                        ) : (
+                            <p>まだ記事がありません。</p>
+                        )
+                    }
+                </div>
+            </div>
+
+            <aside class="filter-panel" id="filter-panel">
+                <div class="filter-header">
+                    <h3>フィルター</h3>
+                </div>
+                
+                <div class="filter-group">
+                    <h4>カテゴリー</h4>
+                    <div class="filter-options">
+                        {categories.map(cat => (
+                            <label class="filter-pill">
+                                <input type="checkbox" value={cat} data-type="category" />
+                                <span>{cat}</span>
+                            </label>
                         ))}
-                    </ul>
-                ) : (
-                    <p>まだ記事がありません。</p>
-                )
-            }
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>タグ</h4>
+                    <div class="filter-options">
+                        {sortedTags.map(tag => (
+                            <label class="filter-pill">
+                                <input type="checkbox" value={tag} data-type="tag" />
+                                <span>{tag}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>ライター</h4>
+                    <div class="filter-options">
+                        {sortedAuthors.map(author => (
+                            <label class="filter-pill">
+                                <input type="checkbox" value={author} data-type="author" />
+                                <span>{author}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>時間</h4>
+                    <div class="date-filters">
+                        <select id="year-select" class="form-select">
+                            <option value="">すべての年</option>
+                            {years.map(y => <option value={y}>{y}年</option>)}
+                        </select>
+                        <select id="month-select" class="form-select" style="display: none;">
+                            <option value="">すべての月</option>
+                            {[...Array(12)].map((_, i) => <option value={i + 1}>{i + 1}月</option>)}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button id="clear-filters-btn" class="base-btn clear-btn">全ての検索条件をクリアする</button>
+                </div>
+            </aside>
         </div>
     </main>
     <Footer />
@@ -140,10 +246,147 @@ const posts = allDocs
 
 <style>
     main {
-        max-width: 1080px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 2rem 1rem;
     }
+    .content-wrapper {
+        display: flex;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+    .post-list-container {
+        flex: 1;
+        min-width: 0;
+    }
+    .mobile-filter-toggle {
+        display: none;
+        margin-bottom: 1.5rem;
+    }
+    .mobile-filter-toggle .base-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--color-bg-card, #f9f9f9);
+        border: 1px solid var(--color-border, #eaeaea);
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        justify-content: center;
+        color: var(--color-text, #333);
+    }
+
+    /* Filter Panel Styles */
+    .filter-panel {
+        width: 280px;
+        flex-shrink: 0;
+        background: var(--color-bg-card, #f9f9f9);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--color-border, #eaeaea);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 2rem;
+    }
+    .filter-header h3 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+    }
+    .filter-group {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--color-border, #eaeaea);
+        padding-bottom: 1.5rem;
+    }
+    .filter-group:last-of-type {
+        border-bottom: none;
+    }
+    .filter-group h4 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        color: var(--color-text, #333);
+    }
+    .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .filter-pill {
+        display: inline-block;
+        cursor: pointer;
+    }
+    .filter-pill input {
+        display: none;
+    }
+    .filter-pill span {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        background: var(--color-bg, #fff);
+        border: 1px solid var(--color-border, #ccc);
+        font-size: 0.85rem;
+        color: var(--color-text, #333);
+        transition: all var(--transition-fast) var(--ease-standard);
+        user-select: none;
+    }
+    .filter-pill input:checked + span {
+        background: var(--color-primary, #0070f3);
+        color: #fff;
+        border-color: var(--color-primary, #0070f3);
+    }
+    .filter-pill:hover span {
+        border-color: var(--color-primary, #0070f3);
+    }
+    .date-filters {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .form-select {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid var(--color-border, #ccc);
+        background-color: var(--color-bg, #fff);
+        font-size: 0.9rem;
+        color: inherit;
+    }
+    .clear-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: transparent;
+        border: 1px solid var(--color-text, #333);
+        color: var(--color-text, #333);
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all var(--transition-fast) var(--ease-standard);
+    }
+    .clear-btn:hover {
+        background: var(--color-text, #333);
+        color: var(--color-bg, #fff);
+    }
+
+    @media (max-width: 800px) {
+        .content-wrapper {
+            flex-direction: column;
+        }
+        .filter-panel {
+            width: 100%;
+            position: static;
+            display: none;
+        }
+        .filter-panel.is-active {
+            display: block;
+        }
+        .mobile-filter-toggle {
+            display: block;
+        }
+    }
+
     .page-header {
         margin-bottom: 3rem;
         text-align: center;
@@ -282,3 +525,77 @@ const posts = allDocs
         color: inherit;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const postCards = document.querySelectorAll('.post-card-wrapper') as NodeListOf<HTMLElement>;
+        const filterCheckboxes = document.querySelectorAll('.filter-pill input') as NodeListOf<HTMLInputElement>;
+        const yearSelect = document.getElementById('year-select') as HTMLSelectElement;
+        const monthSelect = document.getElementById('month-select') as HTMLSelectElement;
+        const clearBtn = document.getElementById('clear-filters-btn') as HTMLButtonElement;
+        const toggleBtn = document.getElementById('toggle-filter-btn') as HTMLButtonElement;
+        const filterPanel = document.getElementById('filter-panel') as HTMLElement;
+
+        if (!yearSelect || !monthSelect || !clearBtn || !toggleBtn || !filterPanel) return;
+
+        function getCheckedValues(type: string) {
+            return Array.from(document.querySelectorAll(`input[data-type="${type}"]:checked`) as NodeListOf<HTMLInputElement>).map(cb => cb.value);
+        }
+
+        function applyFilters() {
+            const selectedCats = getCheckedValues('category');
+            const selectedTags = getCheckedValues('tag');
+            const selectedAuthors = getCheckedValues('author');
+            const selectedYear = yearSelect.value;
+            const selectedMonth = monthSelect.value;
+
+            // Show/hide month select
+            if (selectedYear === "") {
+                monthSelect.style.display = 'none';
+                monthSelect.value = "";
+            } else {
+                monthSelect.style.display = 'block';
+            }
+
+            postCards.forEach(card => {
+                const cats = (card.dataset.categories || '').split('|').filter(Boolean);
+                const tags = (card.dataset.tags || '').split('|').filter(Boolean);
+                const author = card.dataset.author || '';
+                const year = card.dataset.year || '';
+                const month = card.dataset.month || '';
+
+                let matchCat = selectedCats.length === 0 || selectedCats.some(c => cats.includes(c));
+                let matchTag = selectedTags.length === 0 || selectedTags.some(t => tags.includes(t));
+                let matchAuthor = selectedAuthors.length === 0 || selectedAuthors.includes(author);
+                let matchYear = selectedYear === "" || selectedYear === year;
+                let matchMonth = selectedYear === "" || selectedMonth === "" || selectedMonth === month;
+
+                if (matchCat && matchTag && matchAuthor && matchYear && matchMonth) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        filterCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
+        yearSelect.addEventListener('change', applyFilters);
+        monthSelect.addEventListener('change', applyFilters);
+
+        clearBtn.addEventListener('click', () => {
+            filterCheckboxes.forEach(cb => cb.checked = false);
+            yearSelect.value = "";
+            monthSelect.value = "";
+            applyFilters();
+        });
+
+        toggleBtn.addEventListener('click', () => {
+            filterPanel.classList.toggle('is-active');
+            const isActive = filterPanel.classList.contains('is-active');
+            toggleBtn.style.background = isActive ? 'var(--color-border, #eaeaea)' : 'var(--color-bg-card, #f9f9f9)';
+        });
+        
+        // Initial setup
+        applyFilters();
+    });
+</script>
