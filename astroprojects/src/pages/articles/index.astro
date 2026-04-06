@@ -58,13 +58,13 @@ for (let y = 2026; y <= currentYear; y++) {
         </section>
 
         <div class="content-wrapper">
+            <div class="mobile-filter-toggle">
+                <button id="toggle-filter-btn" class="base-btn">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="filter-icon"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    フィルター
+                </button>
+            </div>
             <div class="post-list-container">
-                <div class="mobile-filter-toggle">
-                    <button id="toggle-filter-btn" class="base-btn">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="filter-icon"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                        フィルター
-                    </button>
-                </div>
                 <div class="post-list" id="post-list">
                     {
                         posts.length > 0 ? (
@@ -261,7 +261,7 @@ for (let y = 2026; y <= currentYear; y++) {
     }
     .mobile-filter-toggle {
         display: none;
-        margin-bottom: 1.5rem;
+        width: 100%;
     }
     .mobile-filter-toggle .base-btn {
         display: flex;
@@ -374,16 +374,22 @@ for (let y = 2026; y <= currentYear; y++) {
         .content-wrapper {
             flex-direction: column;
         }
+        .mobile-filter-toggle {
+            display: block;
+            order: 1;
+        }
         .filter-panel {
             width: 100%;
             position: static;
             display: none;
+            order: 2;
         }
         .filter-panel.is-active {
             display: block;
         }
-        .mobile-filter-toggle {
-            display: block;
+        .post-list-container {
+            order: 3;
+            width: 100%;
         }
     }
 
