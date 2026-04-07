@@ -36,8 +36,12 @@ posts.forEach((post) => {
         });
     }
 });
-const sortedTags = Object.keys(tagCount).sort((a, b) => tagCount[b] - tagCount[a]);
-const sortedAuthors = Object.keys(authorCount).sort((a, b) => authorCount[b] - authorCount[a]);
+const sortedTags = Object.keys(tagCount).sort(
+    (a, b) => tagCount[b] - tagCount[a],
+);
+const sortedAuthors = Object.keys(authorCount).sort(
+    (a, b) => authorCount[b] - authorCount[a],
+);
 
 const currentYear = new Date().getFullYear();
 const years = [];
@@ -60,7 +64,20 @@ for (let y = 2026; y <= currentYear; y++) {
         <div class="content-wrapper">
             <div class="mobile-filter-toggle">
                 <button id="toggle-filter-btn" class="base-btn">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="filter-icon"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    <svg
+                        viewBox="0 0 24 24"
+                        width="20"
+                        height="20"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="filter-icon"
+                        ><polygon
+                            points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"
+                        ></polygon></svg
+                    >
                     絞り込んで検索
                 </button>
             </div>
@@ -70,160 +87,248 @@ for (let y = 2026; y <= currentYear; y++) {
                         posts.length > 0 ? (
                             <ul>
                                 {posts.map((post) => {
-                                    const cats = post.data.tags?.filter((t) => categories.includes(t)) || [];
-                                    const tgs = post.data.tags?.filter((t) => !categories.includes(t)) || [];
-                                    const author = post.data.author || "TECH☆TECH";
-                                    const date = post.data.created_at ? new Date(post.data.created_at) : null;
+                                    const cats =
+                                        post.data.tags?.filter((t) =>
+                                            categories.includes(t),
+                                        ) || [];
+                                    const tgs =
+                                        post.data.tags?.filter(
+                                            (t) => !categories.includes(t),
+                                        ) || [];
+                                    const author =
+                                        post.data.author || "TECH☆TECH";
+                                    const date = post.data.created_at
+                                        ? new Date(post.data.created_at)
+                                        : null;
                                     const year = date ? date.getFullYear() : "";
-                                    const month = date ? date.getMonth() + 1 : "";
+                                    const month = date
+                                        ? date.getMonth() + 1
+                                        : "";
                                     return (
-                                <li class="post-card-wrapper" 
-                                    data-categories={`|${cats.join('|')}|`}
-                                    data-tags={`|${tgs.join('|')}|`}
-                                    data-author={author}
-                                    data-year={year}
-                                    data-month={month}
-                                >
-                                <article class="post-card">
-                                    {post.data.cover && (
-                                        <div class="post-cover">
-                                            <Image
-                                                src={post.data.cover}
-                                                alt={post.data.title}
-                                                width={300}
-                                                height={200}
-                                                format="webp"
-                                            />
-                                        </div>
-                                    )}
-                                    <div class="post-content">
-                                        <h2>
-                                            <a
-                                                href={`/${post.slug}`}
-                                                class="stretched-link"
-                                            >
-                                                {post.data.title}
-                                            </a>
-                                        </h2>
-                                        <div class="meta">
-                                            <span class="author-date">
-                                                by{" "}
-                                                {post.data.author ||
-                                                    "TECH☆TECH"}{" "}
-                                                on{" "}
-                                                {post.data.created_at
-                                                    ? new Date(
-                                                          post.data.created_at,
-                                                      ).toLocaleDateString(
-                                                          "ja-JP",
-                                                      )
-                                                    : ""}
-                                            </span>
-                                            <span class="separator">|</span>
-                                            <span class="char-count">
-                                                {post.body
-                                                    ? post.body.length
-                                                    : 0}{" "}
-                                                文字
-                                            </span>
-                                        </div>
-                                        {post.data.description && (
-                                            <p class="description">
-                                                {post.data.description}
-                                            </p>
-                                        )}
-                                        {post.data.tags &&
-                                            post.data.tags.length > 0 && (
-                                                <div class="tags">
-                                                    {((tags) => {
-                                                        const categories = [
-                                                            "blog",
-                                                            "works",
-                                                            "info",
-                                                        ];
-                                                        const catTags =
-                                                            tags.filter((t) =>
-                                                                categories.includes(
-                                                                    t,
-                                                                ),
-                                                            );
-                                                        const elemTags =
-                                                            tags.filter(
-                                                                (t) =>
-                                                                    !categories.includes(
-                                                                        t,
-                                                                    ),
-                                                            );
-                                                        return [
-                                                            ...catTags.map(t => ({name: t, type: 'category'})),
-                                                            ...elemTags.map(t => ({name: t, type: 'tag'})),
-                                                        ].map((t) => (
-                                                            <a
-                                                                class="tag-link"
-                                                                href={`?${t.type}=${t.name}`}
-                                                                data-type={t.type}
-                                                                data-name={t.name}
-                                                            >
-                                                                #{t.name}
-                                                            </a>
-                                                        ));
-                                                    })(post.data.tags || [])}
+                                        <li
+                                            class="post-card-wrapper"
+                                            data-categories={`|${cats.join("|")}|`}
+                                            data-tags={`|${tgs.join("|")}|`}
+                                            data-author={author}
+                                            data-year={year}
+                                            data-month={month}
+                                        >
+                                            <article class="post-card">
+                                                {post.data.cover && (
+                                                    <div class="post-cover">
+                                                        <Image
+                                                            src={
+                                                                post.data.cover
+                                                            }
+                                                            alt={
+                                                                post.data.title
+                                                            }
+                                                            width={300}
+                                                            height={200}
+                                                            format="webp"
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div class="post-content">
+                                                    <h2>
+                                                        <a
+                                                            href={`/${post.slug}`}
+                                                            class="stretched-link"
+                                                        >
+                                                            {post.data.title}
+                                                        </a>
+                                                    </h2>
+                                                    <div class="meta">
+                                                        <span class="author-date">
+                                                            by{" "}
+                                                            {post.data.author ||
+                                                                "TECH☆TECH"}{" "}
+                                                            on{" "}
+                                                            {post.data
+                                                                .created_at
+                                                                ? new Date(
+                                                                      post.data
+                                                                          .created_at,
+                                                                  ).toLocaleDateString(
+                                                                      "ja-JP",
+                                                                  )
+                                                                : ""}
+                                                        </span>
+                                                        <span class="separator">
+                                                            |
+                                                        </span>
+                                                        <span class="char-count">
+                                                            {post.body
+                                                                ? post.body
+                                                                      .length
+                                                                : 0}{" "}
+                                                            文字
+                                                        </span>
+                                                    </div>
+                                                    {post.data.description && (
+                                                        <p class="description">
+                                                            {
+                                                                post.data
+                                                                    .description
+                                                            }
+                                                        </p>
+                                                    )}
+                                                    {post.data.tags &&
+                                                        post.data.tags.length >
+                                                            0 && (
+                                                            <div class="tags">
+                                                                {((tags) => {
+                                                                    const categories =
+                                                                        [
+                                                                            "blog",
+                                                                            "works",
+                                                                            "info",
+                                                                        ];
+                                                                    const catTags =
+                                                                        tags.filter(
+                                                                            (
+                                                                                t,
+                                                                            ) =>
+                                                                                categories.includes(
+                                                                                    t,
+                                                                                ),
+                                                                        );
+                                                                    const elemTags =
+                                                                        tags.filter(
+                                                                            (
+                                                                                t,
+                                                                            ) =>
+                                                                                !categories.includes(
+                                                                                    t,
+                                                                                ),
+                                                                        );
+                                                                    return [
+                                                                        ...catTags.map(
+                                                                            (
+                                                                                t,
+                                                                            ) => ({
+                                                                                name: t,
+                                                                                type: "category",
+                                                                            }),
+                                                                        ),
+                                                                        ...elemTags.map(
+                                                                            (
+                                                                                t,
+                                                                            ) => ({
+                                                                                name: t,
+                                                                                type: "tag",
+                                                                            }),
+                                                                        ),
+                                                                    ].map(
+                                                                        (t) => (
+                                                                            <a
+                                                                                class="tag-link"
+                                                                                href={`?${t.type}=${t.name}`}
+                                                                                data-type={
+                                                                                    t.type
+                                                                                }
+                                                                                data-name={
+                                                                                    t.name
+                                                                                }
+                                                                            >
+                                                                                #
+                                                                                {
+                                                                                    t.name
+                                                                                }
+                                                                            </a>
+                                                                        ),
+                                                                    );
+                                                                })(
+                                                                    post.data
+                                                                        .tags ||
+                                                                        [],
+                                                                )}
+                                                            </div>
+                                                        )}
                                                 </div>
-                                            )}
-                                    </div>
-                                </article>
-                                </li>
-                                )})}
+                                            </article>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         ) : (
                             <p>まだ記事がありません。</p>
                         )
                     }
                 </div>
-                <div id="pagination-container" class="pagination-container"></div>
+                <div id="pagination-container" class="pagination-container">
+                </div>
             </div>
 
             <aside class="filter-panel" id="filter-panel">
                 <div class="filter-header">
                     <h3>絞り込んで検索</h3>
                 </div>
-                
+
                 <div class="filter-group">
                     <h4>カテゴリー</h4>
                     <div class="filter-options">
-                        {categories.map(cat => (
-                            <label class="filter-pill">
-                                <input type="checkbox" value={cat} data-type="category" />
-                                <span>#{cat}</span>
-                            </label>
-                        ))}
+                        {
+                            categories.map((cat) => (
+                                <label class="filter-pill">
+                                    <input
+                                        type="checkbox"
+                                        value={cat}
+                                        data-type="category"
+                                    />
+                                    <span>#{cat}</span>
+                                </label>
+                            ))
+                        }
                     </div>
                 </div>
 
                 <div class="filter-group">
                     <h4>タグ</h4>
-                    <div class="filter-options tags-container" id="tags-container">
-                        {sortedTags.map(tag => (
-                            <label class="filter-pill">
-                                <input type="checkbox" value={tag} data-type="tag" />
-                                <span>#{tag}</span>
-                            </label>
-                        ))}
+                    <div
+                        class="filter-options tags-container"
+                        id="tags-container"
+                    >
+                        {
+                            sortedTags.map((tag) => (
+                                <label class="filter-pill">
+                                    <input
+                                        type="checkbox"
+                                        value={tag}
+                                        data-type="tag"
+                                    />
+                                    <span>#{tag}</span>
+                                </label>
+                            ))
+                        }
                     </div>
-                    {sortedTags.length > 8 && (
-                        <button id="toggle-tags-btn" class="toggle-tags-btn">全てのタグを表示 <span>▼</span></button>
-                    )}
+                    {
+                        sortedTags.length > 8 && (
+                            <button
+                                id="toggle-tags-btn"
+                                class="toggle-tags-btn"
+                            >
+                                全てのタグを表示 <span>▼</span>
+                            </button>
+                        )
+                    }
                 </div>
 
                 <div class="filter-group">
                     <h4>ライター</h4>
                     <div class="filter-options">
-                        {sortedAuthors.map(author => (
-                            <label class="filter-pill">
-                                <input type="checkbox" value={author} data-type="author" />
-                                <span>{author}</span>
-                            </label>
-                        ))}
+                        {
+                            sortedAuthors.map((author) => (
+                                <label class="filter-pill">
+                                    <input
+                                        type="checkbox"
+                                        value={author}
+                                        data-type="author"
+                                    />
+                                    <span>{author}</span>
+                                </label>
+                            ))
+                        }
                     </div>
                 </div>
 
@@ -232,17 +337,27 @@ for (let y = 2026; y <= currentYear; y++) {
                     <div class="date-filters">
                         <select id="year-select" class="form-select">
                             <option value="">すべての年</option>
-                            {years.map(y => <option value={y}>{y}年</option>)}
+                            {years.map((y) => <option value={y}>{y}年</option>)}
                         </select>
-                        <select id="month-select" class="form-select" style="display: none;">
+                        <select
+                            id="month-select"
+                            class="form-select"
+                            style="display: none;"
+                        >
                             <option value="">すべての月</option>
-                            {[...Array(12)].map((_, i) => <option value={i + 1}>{i + 1}月</option>)}
+                            {
+                                [...Array(12)].map((_, i) => (
+                                    <option value={i + 1}>{i + 1}月</option>
+                                ))
+                            }
                         </select>
                     </div>
                 </div>
 
                 <div class="filter-actions">
-                    <button id="clear-filters-btn" class="base-btn clear-btn">全ての検索条件をクリアする</button>
+                    <button id="clear-filters-btn" class="base-btn clear-btn"
+                        >全ての検索条件をクリアする</button
+                    >
                 </div>
             </aside>
         </div>
@@ -352,7 +467,7 @@ for (let y = 2026; y <= currentYear; y++) {
     }
     .filter-pill span {
         display: inline-block;
-        padding: 0.2rem 0.6rem;
+        padding: 0.22rem 0.7rem 0.12rem;
         border-radius: 20px;
         background: var(--color-bg, #fff);
         border: 1px solid var(--color-border, #ccc);
@@ -591,7 +706,8 @@ for (let y = 2026; y <= currentYear; y++) {
         text-decoration: none;
         transition: all var(--transition-fast) var(--ease-standard);
     }
-    .tag-link:hover, .tag-link.is-active {
+    .tag-link:hover,
+    .tag-link.is-active {
         background: var(--color-primary, #0070f3);
         color: #fff;
         border-color: var(--color-primary, #0070f3);
@@ -615,188 +731,275 @@ for (let y = 2026; y <= currentYear; y++) {
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const postCards = document.querySelectorAll('.post-card-wrapper') as NodeListOf<HTMLElement>;
-        const filterCheckboxes = document.querySelectorAll('.filter-pill input') as NodeListOf<HTMLInputElement>;
-        const yearSelect = document.getElementById('year-select') as HTMLSelectElement;
-        const monthSelect = document.getElementById('month-select') as HTMLSelectElement;
-        const clearBtn = document.getElementById('clear-filters-btn') as HTMLButtonElement;
-        const toggleBtn = document.getElementById('toggle-filter-btn') as HTMLButtonElement;
-        const filterPanel = document.getElementById('filter-panel') as HTMLElement;
-        const paginationContainer = document.getElementById('pagination-container') as HTMLElement | null;
+    document.addEventListener("DOMContentLoaded", () => {
+        const postCards = document.querySelectorAll(
+            ".post-card-wrapper",
+        ) as NodeListOf<HTMLElement>;
+        const filterCheckboxes = document.querySelectorAll(
+            ".filter-pill input",
+        ) as NodeListOf<HTMLInputElement>;
+        const yearSelect = document.getElementById(
+            "year-select",
+        ) as HTMLSelectElement;
+        const monthSelect = document.getElementById(
+            "month-select",
+        ) as HTMLSelectElement;
+        const clearBtn = document.getElementById(
+            "clear-filters-btn",
+        ) as HTMLButtonElement;
+        const toggleBtn = document.getElementById(
+            "toggle-filter-btn",
+        ) as HTMLButtonElement;
+        const filterPanel = document.getElementById(
+            "filter-panel",
+        ) as HTMLElement;
+        const paginationContainer = document.getElementById(
+            "pagination-container",
+        ) as HTMLElement | null;
 
-        if (!yearSelect || !monthSelect || !clearBtn || !toggleBtn || !filterPanel || !paginationContainer) return;
+        if (
+            !yearSelect ||
+            !monthSelect ||
+            !clearBtn ||
+            !toggleBtn ||
+            !filterPanel ||
+            !paginationContainer
+        )
+            return;
 
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
 
         function getCheckedValues(type: string) {
-            return Array.from(document.querySelectorAll(`input[data-type="${type}"]:checked`) as NodeListOf<HTMLInputElement>).map(cb => cb.value);
+            return Array.from(
+                document.querySelectorAll(
+                    `input[data-type="${type}"]:checked`,
+                ) as NodeListOf<HTMLInputElement>,
+            ).map((cb) => cb.value);
         }
 
         function restoreFiltersFromURL() {
             const params = new URLSearchParams(window.location.search);
-            const pPage = params.get('page');
+            const pPage = params.get("page");
             if (pPage) currentPage = parseInt(pPage, 10) || 1;
-            
-            filterCheckboxes.forEach(cb => {
-                const type = cb.getAttribute('data-type');
+
+            filterCheckboxes.forEach((cb) => {
+                const type = cb.getAttribute("data-type");
                 if (type) {
-                    const values = params.getAll(type); 
+                    const values = params.getAll(type);
                     cb.checked = values.includes(cb.value);
                 }
             });
-            if (params.has('year')) yearSelect.value = params.get('year')!;
-            if (params.has('month')) monthSelect.value = params.get('month')!;
+            if (params.has("year")) yearSelect.value = params.get("year")!;
+            if (params.has("month")) monthSelect.value = params.get("month")!;
         }
 
-        function updateURL(selectedCats: string[], selectedTags: string[], selectedAuthors: string[], year: string, month: string) {
+        function updateURL(
+            selectedCats: string[],
+            selectedTags: string[],
+            selectedAuthors: string[],
+            year: string,
+            month: string,
+        ) {
             const params = new URLSearchParams();
-            selectedCats.forEach(c => params.append('category', c));
-            selectedTags.forEach(t => params.append('tag', t));
-            selectedAuthors.forEach(a => params.append('author', a));
-            if (year) params.set('year', year);
-            if (month) params.set('month', month);
-            if (currentPage > 1) params.set('page', currentPage.toString());
-            
+            selectedCats.forEach((c) => params.append("category", c));
+            selectedTags.forEach((t) => params.append("tag", t));
+            selectedAuthors.forEach((a) => params.append("author", a));
+            if (year) params.set("year", year);
+            if (month) params.set("month", month);
+            if (currentPage > 1) params.set("page", currentPage.toString());
+
             const paramStr = params.toString();
-            const newUrl = window.location.pathname + (paramStr ? '?' + paramStr : '');
-            if (window.location.search !== '?' + paramStr && !(window.location.search === '' && paramStr === '')) {
-                window.history.pushState({path: newUrl}, '', newUrl);
+            const newUrl =
+                window.location.pathname + (paramStr ? "?" + paramStr : "");
+            if (
+                window.location.search !== "?" + paramStr &&
+                !(window.location.search === "" && paramStr === "")
+            ) {
+                window.history.pushState({ path: newUrl }, "", newUrl);
             }
         }
 
         function renderPagination(totalItems: number) {
-            paginationContainer!.innerHTML = '';
+            paginationContainer!.innerHTML = "";
             const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
             if (totalPages <= 1) return;
 
             if (currentPage > totalPages) currentPage = totalPages;
 
-            const createBtn = (text: string | number, pageNum: number, disabled: boolean, active: boolean) => {
-                const btn = document.createElement('button');
-                btn.className = 'page-btn' + (active ? ' is-active' : '');
+            const createBtn = (
+                text: string | number,
+                pageNum: number,
+                disabled: boolean,
+                active: boolean,
+            ) => {
+                const btn = document.createElement("button");
+                btn.className = "page-btn" + (active ? " is-active" : "");
                 btn.textContent = String(text);
                 btn.disabled = disabled;
                 if (!disabled && !active) {
-                    btn.addEventListener('click', () => {
+                    btn.addEventListener("click", () => {
                         currentPage = pageNum;
                         applyFilters(false);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        window.scrollTo({ top: 0, behavior: "smooth" });
                     });
                 }
                 return btn;
             };
 
-            paginationContainer!.appendChild(createBtn('<', currentPage - 1, currentPage === 1, false));
+            paginationContainer!.appendChild(
+                createBtn("<", currentPage - 1, currentPage === 1, false),
+            );
             for (let i = 1; i <= totalPages; i++) {
-                paginationContainer!.appendChild(createBtn(i, i, false, i === currentPage));
+                paginationContainer!.appendChild(
+                    createBtn(i, i, false, i === currentPage),
+                );
             }
-            paginationContainer!.appendChild(createBtn('>', currentPage + 1, currentPage === totalPages, false));
+            paginationContainer!.appendChild(
+                createBtn(
+                    ">",
+                    currentPage + 1,
+                    currentPage === totalPages,
+                    false,
+                ),
+            );
         }
 
         function applyFilters(resetPage: boolean = true) {
             if (resetPage) currentPage = 1;
 
-            const selectedCats = getCheckedValues('category');
-            const selectedTags = getCheckedValues('tag');
-            const selectedAuthors = getCheckedValues('author');
+            const selectedCats = getCheckedValues("category");
+            const selectedTags = getCheckedValues("tag");
+            const selectedAuthors = getCheckedValues("author");
             const selectedYear = yearSelect.value;
             const selectedMonth = monthSelect.value;
 
             if (selectedYear === "") {
-                monthSelect.style.display = 'none';
+                monthSelect.style.display = "none";
                 monthSelect.value = "";
             } else {
-                monthSelect.style.display = 'block';
+                monthSelect.style.display = "block";
             }
 
             const matchedCards: HTMLElement[] = [];
 
-            postCards.forEach(card => {
-                const cats = (card.dataset.categories || '').split('|').filter(Boolean);
-                const tags = (card.dataset.tags || '').split('|').filter(Boolean);
-                const author = card.dataset.author || '';
-                const year = card.dataset.year || '';
-                const month = card.dataset.month || '';
+            postCards.forEach((card) => {
+                const cats = (card.dataset.categories || "")
+                    .split("|")
+                    .filter(Boolean);
+                const tags = (card.dataset.tags || "")
+                    .split("|")
+                    .filter(Boolean);
+                const author = card.dataset.author || "";
+                const year = card.dataset.year || "";
+                const month = card.dataset.month || "";
 
-                let matchCat = selectedCats.length === 0 || selectedCats.some(c => cats.includes(c));
-                let matchTag = selectedTags.length === 0 || selectedTags.some(t => tags.includes(t));
-                let matchAuthor = selectedAuthors.length === 0 || selectedAuthors.includes(author);
+                let matchCat =
+                    selectedCats.length === 0 ||
+                    selectedCats.some((c) => cats.includes(c));
+                let matchTag =
+                    selectedTags.length === 0 ||
+                    selectedTags.some((t) => tags.includes(t));
+                let matchAuthor =
+                    selectedAuthors.length === 0 ||
+                    selectedAuthors.includes(author);
                 let matchYear = selectedYear === "" || selectedYear === year;
-                let matchMonth = selectedYear === "" || selectedMonth === "" || selectedMonth === month;
+                let matchMonth =
+                    selectedYear === "" ||
+                    selectedMonth === "" ||
+                    selectedMonth === month;
 
-                if (matchCat && matchTag && matchAuthor && matchYear && matchMonth) {
+                if (
+                    matchCat &&
+                    matchTag &&
+                    matchAuthor &&
+                    matchYear &&
+                    matchMonth
+                ) {
                     matchedCards.push(card);
                 } else {
-                    card.style.display = 'none';
+                    card.style.display = "none";
                 }
             });
 
             const totalItems = matchedCards.length;
             const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-            if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+            if (currentPage > totalPages && totalPages > 0)
+                currentPage = totalPages;
 
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const endIndex = startIndex + ITEMS_PER_PAGE;
 
             matchedCards.forEach((card, index) => {
                 if (index >= startIndex && index < endIndex) {
-                    card.style.display = '';
+                    card.style.display = "";
                 } else {
-                    card.style.display = 'none';
+                    card.style.display = "none";
                 }
             });
 
-            document.querySelectorAll('.tag-link').forEach((link) => {
-                const type = link.getAttribute('data-type');
-                const name = link.getAttribute('data-name');
-                if ((type === 'category' && selectedCats.includes(name!)) ||
-                    (type === 'tag' && selectedTags.includes(name!))) {
-                    link.classList.add('is-active');
+            document.querySelectorAll(".tag-link").forEach((link) => {
+                const type = link.getAttribute("data-type");
+                const name = link.getAttribute("data-name");
+                if (
+                    (type === "category" && selectedCats.includes(name!)) ||
+                    (type === "tag" && selectedTags.includes(name!))
+                ) {
+                    link.classList.add("is-active");
                 } else {
-                    link.classList.remove('is-active');
+                    link.classList.remove("is-active");
                 }
             });
 
             renderPagination(totalItems);
-            updateURL(selectedCats, selectedTags, selectedAuthors, selectedYear, selectedMonth);
+            updateURL(
+                selectedCats,
+                selectedTags,
+                selectedAuthors,
+                selectedYear,
+                selectedMonth,
+            );
         }
 
-        filterCheckboxes.forEach(cb => cb.addEventListener('change', () => applyFilters(true)));
-        yearSelect.addEventListener('change', () => applyFilters(true));
-        monthSelect.addEventListener('change', () => applyFilters(true));
+        filterCheckboxes.forEach((cb) =>
+            cb.addEventListener("change", () => applyFilters(true)),
+        );
+        yearSelect.addEventListener("change", () => applyFilters(true));
+        monthSelect.addEventListener("change", () => applyFilters(true));
 
-        clearBtn.addEventListener('click', () => {
-            filterCheckboxes.forEach(cb => cb.checked = false);
+        clearBtn.addEventListener("click", () => {
+            filterCheckboxes.forEach((cb) => (cb.checked = false));
             yearSelect.value = "";
             monthSelect.value = "";
             applyFilters(true);
         });
 
-        toggleBtn.addEventListener('click', () => {
-            filterPanel.classList.toggle('is-active');
-            const isActive = filterPanel.classList.contains('is-active');
-            toggleBtn.style.background = isActive ? 'var(--color-border, #eaeaea)' : 'var(--color-bg-card, #f9f9f9)';
+        toggleBtn.addEventListener("click", () => {
+            filterPanel.classList.toggle("is-active");
+            const isActive = filterPanel.classList.contains("is-active");
+            toggleBtn.style.background = isActive
+                ? "var(--color-border, #eaeaea)"
+                : "var(--color-bg-card, #f9f9f9)";
         });
 
-        const toggleTagsBtn = document.getElementById('toggle-tags-btn');
-        const tagsContainer = document.getElementById('tags-container');
+        const toggleTagsBtn = document.getElementById("toggle-tags-btn");
+        const tagsContainer = document.getElementById("tags-container");
         if (toggleTagsBtn && tagsContainer) {
-            toggleTagsBtn.addEventListener('click', () => {
-                tagsContainer.classList.toggle('is-expanded');
-                const isExpanded = tagsContainer.classList.contains('is-expanded');
-                toggleTagsBtn.innerHTML = isExpanded 
-                    ? '折りたたむ <span>▲</span>' 
-                    : '全てのタグを表示 <span>▼</span>';
+            toggleTagsBtn.addEventListener("click", () => {
+                tagsContainer.classList.toggle("is-expanded");
+                const isExpanded =
+                    tagsContainer.classList.contains("is-expanded");
+                toggleTagsBtn.innerHTML = isExpanded
+                    ? "折りたたむ <span>▲</span>"
+                    : "全てのタグを表示 <span>▼</span>";
             });
         }
 
-        window.addEventListener('popstate', () => {
+        window.addEventListener("popstate", () => {
             restoreFiltersFromURL();
             applyFilters(false);
         });
-        
+
         restoreFiltersFromURL();
         applyFilters(false);
     });
