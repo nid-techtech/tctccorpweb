@@ -161,6 +161,8 @@ for (let y = 2026; y <= currentYear; y++) {
                                                             <a
                                                                 class="tag-link"
                                                                 href={`?${t.type}=${t.name}`}
+                                                                data-type={t.type}
+                                                                data-name={t.name}
                                                             >
                                                                 #{t.name}
                                                             </a>
@@ -580,16 +582,16 @@ for (let y = 2026; y <= currentYear; y++) {
     }
     .tag-link {
         display: inline-block;
-        padding: 0.2rem 0.6rem;
+        padding: 0.1rem 0.4rem;
         border-radius: 20px;
-        background: var(--color-bg, #fff);
-        border: 1px solid var(--color-border, #ccc);
+        background: transparent;
+        border: 1px solid transparent;
         font-size: 0.75rem;
-        color: var(--color-text, #333);
+        color: var(--color-primary, #0070f3);
         text-decoration: none;
         transition: all var(--transition-fast) var(--ease-standard);
     }
-    .tag-link:hover, .tag-link:active {
+    .tag-link:hover, .tag-link.is-active {
         background: var(--color-primary, #0070f3);
         color: #fff;
         border-color: var(--color-primary, #0070f3);
@@ -743,6 +745,17 @@ for (let y = 2026; y <= currentYear; y++) {
                     card.style.display = '';
                 } else {
                     card.style.display = 'none';
+                }
+            });
+
+            document.querySelectorAll('.tag-link').forEach((link) => {
+                const type = link.getAttribute('data-type');
+                const name = link.getAttribute('data-name');
+                if ((type === 'category' && selectedCats.includes(name!)) ||
+                    (type === 'tag' && selectedTags.includes(name!))) {
+                    link.classList.add('is-active');
+                } else {
+                    link.classList.remove('is-active');
                 }
             });
 
