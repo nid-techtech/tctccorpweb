@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Pill from "@/components/ui/Pill.astro";
 
 interface Props {
   count?: number;
@@ -32,24 +33,18 @@ const sortedDocs = allDocs
               <span class="title">{doc.data.title || doc.slug}</span>
               {doc.data.tags && doc.data.tags.length > 0 && (
                 <div class="post-tags">
-                  {doc.data.tags.map((tag) =>
-                    filterTag &&
-                    tag.toLowerCase() === filterTag.toLowerCase() ? (
-                      <span
-                        class="tag inactive"
-                        onclick="event.preventDefault(); event.stopPropagation();"
+                  {doc.data.tags.map((tag) => {
+                    const isCurrent = filterTag && tag.toLowerCase() === filterTag.toLowerCase();
+                    return (
+                      <Pill
+                        as="span"
+                        class={isCurrent ? "is-inactive" : "link"}
+                        onclick={!isCurrent ? `event.preventDefault(); event.stopPropagation(); window.location.href='/${tag}';` : "event.preventDefault(); event.stopPropagation();"}
                       >
                         #{tag}
-                      </span>
-                    ) : (
-                      <span
-                        class="tag link"
-                        onclick={`event.preventDefault(); event.stopPropagation(); window.location.href='/${tag}';`}
-                      >
-                        #{tag}
-                      </span>
-                    ),
-                  )}
+                      </Pill>
+                    )
+                  })}
                 </div>
               )}
             </div>
@@ -112,25 +107,6 @@ const sortedDocs = allDocs
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-  }
-  .tag {
-    font-size: 0.8rem;
-    color: var(--color-primary);
-  }
-  .tag.link {
-    cursor: pointer;
-    text-decoration: none;
-    transition: opacity var(--transition-fast) var(--ease-standard);
-  }
-  .tag.link:hover {
-    text-decoration: underline;
-    opacity: 0.7;
-  }
-  .tag.inactive {
-    color: #888 !important;
-    cursor: default;
-    opacity: 0.8;
-    pointer-events: auto; /* To catch clicks and stop propagation */
   }
   .date {
     font-size: 0.85rem;

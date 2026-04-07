@@ -9,6 +9,8 @@ import { Image } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
+import Pill from "@/components/ui/Pill.astro";
+import { CATEGORIES } from "@/utils/constants";
 
 const allDocs = await getCollection("docs");
 const posts = allDocs
@@ -22,7 +24,7 @@ const posts = allDocs
         return dateB.getTime() - dateA.getTime();
     });
 
-const categories = ["blog", "works", "info"];
+const categories = CATEGORIES;
 const tagCount: Record<string, number> = {};
 const authorCount: Record<string, number> = {};
 posts.forEach((post) => {
@@ -178,12 +180,6 @@ for (let y = 2026; y <= currentYear; y++) {
                                                             0 && (
                                                             <div class="tags">
                                                                 {((tags) => {
-                                                                    const categories =
-                                                                        [
-                                                                            "blog",
-                                                                            "works",
-                                                                            "info",
-                                                                        ];
                                                                     const catTags =
                                                                         tags.filter(
                                                                             (
@@ -221,7 +217,8 @@ for (let y = 2026; y <= currentYear; y++) {
                                                                         ),
                                                                     ].map(
                                                                         (t) => (
-                                                                            <a
+                                                                            <Pill
+                                                                                as="a"
                                                                                 class="tag-link"
                                                                                 href={`?${t.type}=${t.name}`}
                                                                                 data-type={
@@ -235,7 +232,7 @@ for (let y = 2026; y <= currentYear; y++) {
                                                                                 {
                                                                                     t.name
                                                                                 }
-                                                                            </a>
+                                                                            </Pill>
                                                                         ),
                                                                     );
                                                                 })(
@@ -270,14 +267,13 @@ for (let y = 2026; y <= currentYear; y++) {
                     <div class="filter-options">
                         {
                             categories.map((cat) => (
-                                <label class="filter-pill">
-                                    <input
-                                        type="checkbox"
+                                <Pill
+                                    as="label"
                                         value={cat}
                                         data-type="category"
-                                    />
-                                    <span>#{cat}</span>
-                                </label>
+                                >
+                                    #{cat}
+                                </Pill>
                             ))
                         }
                     </div>
@@ -291,14 +287,9 @@ for (let y = 2026; y <= currentYear; y++) {
                     >
                         {
                             sortedTags.map((tag) => (
-                                <label class="filter-pill">
-                                    <input
-                                        type="checkbox"
-                                        value={tag}
-                                        data-type="tag"
-                                    />
-                                    <span>#{tag}</span>
-                                </label>
+                                <Pill as="label" value={tag} data-type="tag">
+                                    #{tag}
+                                </Pill>
                             ))
                         }
                     </div>
@@ -319,14 +310,13 @@ for (let y = 2026; y <= currentYear; y++) {
                     <div class="filter-options">
                         {
                             sortedAuthors.map((author) => (
-                                <label class="filter-pill">
-                                    <input
-                                        type="checkbox"
+                                <Pill
+                                    as="label"
                                         value={author}
                                         data-type="author"
-                                    />
-                                    <span>{author}</span>
-                                </label>
+                                >
+                                    {author}
+                                </Pill>
                             ))
                         }
                     </div>
@@ -407,7 +397,6 @@ for (let y = 2026; y <= currentYear; y++) {
         padding: 1.5rem;
         border-radius: 8px;
         border: 1px solid var(--color-border, #eaeaea);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         position: sticky;
         top: 6rem;
         max-height: calc(100vh - 7rem);
@@ -457,32 +446,6 @@ for (let y = 2026; y <= currentYear; y++) {
         display: flex;
         align-items: center;
         gap: 0.25rem;
-    }
-    .filter-pill {
-        display: inline-block;
-        cursor: pointer;
-    }
-    .filter-pill input {
-        display: none;
-    }
-    .filter-pill span {
-        display: inline-block;
-        padding: 0.22rem 0.7rem 0.12rem;
-        border-radius: 20px;
-        background: var(--color-bg, #fff);
-        border: 1px solid var(--color-border, #ccc);
-        font-size: 0.75rem;
-        color: var(--color-text, #333);
-        transition: all var(--transition-fast) var(--ease-standard);
-        user-select: none;
-    }
-    .filter-pill input:checked + span {
-        background: var(--color-primary, #0070f3);
-        color: #fff;
-        border-color: var(--color-primary, #0070f3);
-    }
-    .filter-pill:hover span {
-        border-color: var(--color-primary, #0070f3);
     }
     .date-filters {
         display: flex;
@@ -695,24 +658,6 @@ for (let y = 2026; y <= currentYear; y++) {
         flex-wrap: wrap;
         margin-top: auto;
     }
-    .tag-link {
-        display: inline-block;
-        padding: 0.1rem 0.4rem;
-        border-radius: 20px;
-        background: transparent;
-        border: 1px solid transparent;
-        font-size: 0.75rem;
-        color: var(--color-primary, #0070f3);
-        text-decoration: none;
-        transition: all var(--transition-fast) var(--ease-standard);
-    }
-    .tag-link:hover,
-    .tag-link.is-active {
-        background: var(--color-primary, #0070f3);
-        color: #fff;
-        border-color: var(--color-primary, #0070f3);
-        text-decoration: none;
-    }
     /* 開発環境でのみ表示されるDRAFTバッジ */
     .draft-badge {
         display: inline-block;
@@ -736,7 +681,7 @@ for (let y = 2026; y <= currentYear; y++) {
             ".post-card-wrapper",
         ) as NodeListOf<HTMLElement>;
         const filterCheckboxes = document.querySelectorAll(
-            ".filter-pill input",
+            ".pill-root input",
         ) as NodeListOf<HTMLInputElement>;
         const yearSelect = document.getElementById(
             "year-select",

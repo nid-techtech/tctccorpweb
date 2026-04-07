@@ -5,6 +5,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import type { CollectionEntry } from "astro:content";
+import Pill from "@/components/ui/Pill.astro";
+import { CATEGORIES } from "@/utils/constants";
 
 export async function getStaticPaths() {
     const blogEntries = await getCollection("docs");
@@ -24,6 +26,8 @@ interface Props {
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
+const categories = CATEGORIES;
+
 // h1〜h3を目次に表示する（#, ##, ### すべて対応）
 const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 ---
@@ -33,7 +37,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     description={entry.data.description}
 >
     <Header />
-    <main class:list={[tocHeadings.length > 0 ? 'has-toc' : '']}>
+    <main class:list={[tocHeadings.length > 0 ? "has-toc" : ""]}>
         <article class="prose">
             <header class="article-header">
                 <h1>{entry.data.title}</h1>
@@ -66,9 +70,12 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
                     entry.data.tags && entry.data.tags.length > 0 && (
                         <div class="tags">
                             {entry.data.tags.map((tag) => (
-                                <a class="tag" href={`/${tag}`}>
+                                <Pill
+                                    as="a"
+                                    href={`/articles?${categories.includes(tag) ? "category" : "tag"}=${tag}`}
+                                >
                                     #{tag}
-                                </a>
+                                </Pill>
                             ))}
                         </div>
                     )
@@ -76,18 +83,22 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
             </header>
             <Content />
         </article>
-        {tocHeadings.length > 0 && (
-            <nav class="toc" aria-label="目次">
-                <p class="toc-title">目次</p>
-                <ul>
-                    {tocHeadings.map((h) => (
-                        <li class:list={[`toc-h${h.depth}`]}>
-                            <a href={`#${h.slug}`} data-slug={h.slug}>{h.text}</a>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-        )}
+        {
+            tocHeadings.length > 0 && (
+                <nav class="toc" aria-label="目次">
+                    <p class="toc-title">目次</p>
+                    <ul>
+                        {tocHeadings.map((h) => (
+                            <li class:list={[`toc-h${h.depth}`]}>
+                                <a href={`#${h.slug}`} data-slug={h.slug}>
+                                    {h.text}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            )
+        }
     </main>
     <Footer />
 </BaseLayout>
@@ -144,21 +155,6 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
         gap: 0.5rem;
         flex-wrap: wrap;
         margin-top: 0.5rem;
-    }
-    .tag {
-        background: var(--color-code-bg);
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        text-decoration: none;
-        color: var(--color-muted);
-        transition:
-            background-color var(--transition-fast) var(--ease-out),
-            color var(--transition-fast) var(--ease-out);
-    }
-    .tag:hover {
-        background: var(--color-primary);
-        color: #fff;
     }
 
     /* === TOC サイドバー === */
@@ -227,47 +223,50 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 </style>
 
 <script>
-// IntersectionObserver で現在表示中の見出しをTOCでハイライト
-const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc a[data-slug]');
-if (tocLinks.length > 0) {
-    const headingEls: Element[] = [];
-    tocLinks.forEach(link => {
-        const slug = link.dataset.slug;
-        if (slug) {
-            const el = document.getElementById(slug);
-            if (el) headingEls.push(el);
-        }
-    });
-
-    let activeSlug = '';
-
-    const observer = new IntersectionObserver(
-        (entries) => {
-            // ビューポート内に入った見出しのうち、最も上にあるものをアクティブにする
-            const visible = entries.filter(e => e.isIntersecting);
-            if (visible.length > 0) {
-                // 複数同時に見えているときは最初（最上部）のものを優先
-                const topEntry = visible.reduce((a, b) =>
-                    a.boundingClientRect.top < b.boundingClientRect.top ? a : b
-                );
-                activeSlug = topEntry.target.id;
+    // IntersectionObserver で現在表示中の見出しをTOCでハイライト
+    const tocLinks =
+        document.querySelectorAll<HTMLAnchorElement>(".toc a[data-slug]");
+    if (tocLinks.length > 0) {
+        const headingEls: Element[] = [];
+        tocLinks.forEach((link) => {
+            const slug = link.dataset.slug;
+            if (slug) {
+                const el = document.getElementById(slug);
+                if (el) headingEls.push(el);
             }
-            // アクティブクラスの付け替え
-            tocLinks.forEach(link => {
-                if (link.dataset.slug === activeSlug) {
-                    link.classList.add('is-active');
-                } else {
-                    link.classList.remove('is-active');
-                }
-            });
-        },
-        {
-            // ページ上部33%に入ったタイミングで反応させる
-            rootMargin: '0px 0px -70% 0px',
-            threshold: 0
-        }
-    );
+        });
 
-    headingEls.forEach(el => observer.observe(el));
-}
+        let activeSlug = "";
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                // ビューポート内に入った見出しのうち、最も上にあるものをアクティブにする
+                const visible = entries.filter((e) => e.isIntersecting);
+                if (visible.length > 0) {
+                    // 複数同時に見えているときは最初（最上部）のものを優先
+                    const topEntry = visible.reduce((a, b) =>
+                        a.boundingClientRect.top < b.boundingClientRect.top
+                            ? a
+                            : b,
+                    );
+                    activeSlug = topEntry.target.id;
+                }
+                // アクティブクラスの付け替え
+                tocLinks.forEach((link) => {
+                    if (link.dataset.slug === activeSlug) {
+                        link.classList.add("is-active");
+                    } else {
+                        link.classList.remove("is-active");
+                    }
+                });
+            },
+            {
+                // ページ上部33%に入ったタイミングで反応させる
+                rootMargin: "0px 0px -70% 0px",
+                threshold: 0,
+            },
+        );
+
+        headingEls.forEach((el) => observer.observe(el));
+    }
 </script>

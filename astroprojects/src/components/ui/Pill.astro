@@ -1,0 +1,111 @@
+---
+/**
+ * Pill Component
+ * 記事のタグや検索フィルターで使用される丸型（Pill）のUIコンポーネント。
+ */
+interface Props {
+	as?: "a" | "label" | "span" | "button";
+	href?: string;
+	type?: "checkbox" | "radio";
+	value?: string;
+	name?: string;
+	checked?: boolean;
+	class?: string;
+	[key: string]: any;
+}
+
+const { as: Tag = "span", class: className, ...rest } = Astro.props;
+
+// 属性の整理
+const attr: any = { ...rest };
+if (Tag === "a" && rest.href) {
+	attr.href = rest.href;
+}
+---
+
+<Tag class:list={["pill-root", className]} {...attr}>
+	{
+		Tag === "label" && (
+			<input
+				type={rest.type || "checkbox"}
+				value={rest.value}
+				name={rest.name}
+				checked={rest.checked}
+				{...{
+					"data-type": rest["data-type"],
+					"data-name": rest["data-name"],
+				}}
+			/>
+		)
+	}
+	<span class="pill-inner">
+		<slot />
+	</span>
+</Tag>
+
+<style>
+	/* 基本構造 */
+	.pill-root {
+		display: inline-block;
+		cursor: pointer;
+		text-underline-offset: 4px;
+		text-decoration: none;
+		color: inherit;
+		border: none;
+		background: none;
+		padding: 0;
+		font-family: inherit;
+	}
+
+	/* label内のinputは非表示 */
+	.pill-root input {
+		display: none;
+	}
+
+	/* 見た目本体 */
+	.pill-inner {
+		display: inline-block;
+		padding: 0.32rem 0.6rem 0.24rem;
+		border-radius: 20px;
+		background: var(--color-bg, #fff);
+		border: 1px solid var(--color-border, #ccc);
+		font-size: 0.75rem;
+		color: var(--color-text, #333);
+		transition: all var(--transition-fast) var(--ease-standard);
+		user-select: none;
+		line-height: 1.2;
+	}
+
+	/* Inputチェック時のスタイル（フィルター用） */
+	.pill-root input:checked + .pill-inner {
+		background: var(--color-primary, #0070f3);
+		color: #fff;
+		border-color: var(--color-primary, #0070f3);
+	}
+
+	/* ホバー時の挙動 */
+	.pill-root:hover .pill-inner {
+		border-color: var(--color-primary, #0070f3);
+	}
+
+	/* リンクやボタンの場合のホバー（反転） */
+	a.pill-root:hover .pill-inner,
+	button.pill-root:hover .pill-inner,
+	.pill-root.is-active .pill-inner {
+		background: var(--color-primary, #0070f3);
+		color: #fff;
+		border-color: var(--color-primary, #0070f3);
+	}
+
+	/* アクティブ/現在のページ等で無効化したい場合（RecentPosts等） */
+	.pill-root.is-inactive {
+		cursor: default;
+		pointer-events: none;
+		opacity: 0.6;
+	}
+	.pill-root.is-inactive .pill-inner {
+		background: var(--color-border, #ccc);
+		color: var(--color-muted, #777);
+		border-color: var(--color-border, #ccc);
+	}
+</style>
