@@ -7,6 +7,8 @@ import P5Intaraction from "../components/P5Intaraction.astro";
 const title = "TECH☆TECH";
 const description =
     "A collective of developers and creators pushing the boundaries of technology and design.";
+
+const today = new Date();
 ---
 
 <BaseLayout title={title} description={description}>
@@ -32,7 +34,8 @@ const description =
             </div>
         </section>
         <div class="copyright reveal-text stagger-3">
-            &copy; TECH☆TECH 2021-2026 <br />
+            &copy; TECH☆TECH 2021 - {today.getFullYear()}
+            <br />
             This website was AI-assisted and reviewed/edited by a human.
         </div>
     </div>
