@@ -1,5 +1,6 @@
 ---
 import AboutLayout from "../../layouts/AboutLayout.astro";
+import { Image } from "astro:assets";
 ---
 
 <AboutLayout
@@ -16,7 +17,7 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
         個人研究の内容をイベントに出す際、研究室でなく学生サークルとして出展することで、学生同士の情報交換や共同作業をより強くすることが狙いでした。
     </p>
 
-    <img src="https://i.imgur.com/lZ0O1NC.jpeg" alt="ユメカワワンダーランド" />
+    <Image src="https://i.imgur.com/lZ0O1NC.jpeg" alt="ユメカワワンダーランド" inferSize={true} />
 
     <p>
         一人でものづくりをすることはできます。<br />
@@ -28,7 +29,7 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
         それはものづくりを楽しく、明るく照らします。
     </p>
 
-    <img src="https://i.imgur.com/WDKRvsa.jpeg" alt="集合写真" />
+    <Image src="https://i.imgur.com/WDKRvsa.jpeg" alt="集合写真" inferSize={true} />
 
     <h3>あなたと私を技術でつなぐ。ものづくりの星座となれ。</h3>
     <p>

@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import AboutLayout from "../../layouts/AboutLayout.astro";
 ---
 
@@ -35,7 +36,13 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
             話しているうちに最初の話題から大きく脱線していることもしょっちゅう。
         </p>
 
-        <img src="https://i.imgur.com/mdm7G3u.jpeg" alt="雑談" />
+        <Image
+            src="https://i.imgur.com/mdm7G3u.jpeg"
+            alt="雑談"
+            inferSize={true}
+            loading="eager"
+            fetchpriority="high"
+        />
 
         <p>例えば：</p>
         <ul>
@@ -47,7 +54,11 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
             </li>
         </ul>
 
-        <img src="https://i.imgur.com/JEOaRzE.gif" alt="雑談" />
+        <Image
+            src="https://i.imgur.com/JEOaRzE.gif"
+            alt="雑談"
+            inferSize={true}
+        />
 
         <p>
             これはごく一部ですが。<br />
@@ -66,7 +77,11 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
             今どきなら対話AIで解決策を探すことが普通になってきましたが、複雑な問題やシチュエーションだったら人に相談するのもありですよね。
         </p>
 
-        <img src="https://i.imgur.com/znPjkSu.jpeg" alt="作業中" />
+        <Image
+            src="https://i.imgur.com/znPjkSu.jpeg"
+            alt="作業中"
+            inferSize={true}
+        />
 
         <p>
             これは、「車輪の再発明」を防ぐという観点でも重要です。<br />
@@ -75,7 +90,11 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
             まあ自分自身が手を動かして理解を深めるという意味では無駄ではないですけれども。
         </p>
 
-        <img src="https://i.imgur.com/bgTm9kA.jpeg" alt="penplotter" />
+        <Image
+            src="https://i.imgur.com/bgTm9kA.jpeg"
+            alt="penplotter"
+            inferSize={true}
+        />
 
         <p>
             何か問題が発生して、それをどうやって解決したのか、記録に残してDiscordやブログで公開する。<br
@@ -84,7 +103,11 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
             やってることはQiitaやZennと同じではあるんですが、情報源と直接コンタクトが取れるのは付加価値です。
         </p>
 
-        <img src="https://i.imgur.com/qSDVQKF.jpeg" alt="SafeBeatHelmet" />
+        <Image
+            src="https://i.imgur.com/qSDVQKF.jpeg"
+            alt="SafeBeatHelmet"
+            inferSize={true}
+        />
 
         <p>雑談はこれの延長上にあるという見方もできます。</p>
     </section>
@@ -96,7 +119,11 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
 
         <p>サークル活動として最も想像しやすいのはこれだと思います。</p>
 
-        <img src="https://i.imgur.com/OfcFopW.jpeg" alt="ShapeWriter" />
+        <Image
+            src="https://i.imgur.com/OfcFopW.jpeg"
+            alt="ShapeWriter"
+            inferSize={true}
+        />
 
         <p>
             人によって持っている技術力は多様です。<br />
@@ -106,7 +133,11 @@ import AboutLayout from "../../layouts/AboutLayout.astro";
             インスタレーション、参加型ゲーム、Webサイト構築など、多数実績があります。
         </p>
 
-        <img src="https://i.imgur.com/JylJRjz.jpeg" alt="SilverBullet" />
+        <Image
+            src="https://i.imgur.com/JylJRjz.jpeg"
+            alt="SilverBullet"
+            inferSize={true}
+        />
 
         <p>
             その他、団体名義でイベントに出展したりもしています。<br />
